@@ -1,3 +1,42 @@
-h1 {color: red;}
+* {
+    box-sizing: border-box;
+    font-family: monospace;
+}
 
-body {background-color: black;}
+body {
+    margin: 0px;
+    background-color: lightgray;
+}
+
+.index {
+    overflow: hidden;
+    background-color: black;
+}
+
+.index a {
+    float: left;
+    display: block;
+    text-align: center;
+    padding: 20px;
+    text-decoration: none;
+    font-size: 30px;
+    color: white;
+}
+
+.index a:hover {
+    text-shadow: 2px 2px 5px red;
+}
+
+.content {
+    padding: 10px
+}
+
+.content h1 {
+    font-size: 50px;
+    text-decoration: underline;
+}
+
+.content p {
+    font-size: 35px;
+    line-height: 75px;
+}
