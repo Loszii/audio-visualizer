@@ -55,19 +55,42 @@ body {
     height: 300px;
 }
 
-@media screen and (max-width: 1650px) {
+@media screen and (max-width: 1600px) {
     .mj, .stevens {
         margin-right: 0px;
     }
 }
 
-@media screen and (max-width: 1525px) {
+@media screen and (max-width: 1500px) {
     .mj, .stevens {
         margin-top: 0px;
     }
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 800px){
+    .content h1 {
+        font-size: 40px;
+    }
+    .content p {
+        font-size: 25px;
+        line-height: 50px;
+    }
+    .mj {
+        height: 350px;
+    }
+    .stevens {
+        height: 200px;
+    }
+}
+
+@media screen and (max-width: 550px){
+    .content h1 {
+        font-size: 30px;
+    }
+    .content p {
+        font-size: 17.5px;
+        line-height: 35px;
+    }
     .mj {
         height: 300px;
     }
@@ -76,40 +99,9 @@ body {
     }
 }
 
-@media screen and (max-width: 1200px){
-    .content p {
-        font-size: 30px;
-        line-height: 50px;
-
-    }
-    .content h1 {
-        font-size: 40px;
-    }
-}
-
-@media screen and (max-width: 1050px){
-    .content p {
-        font-size: 25px;
-        line-height: 40px;
-    }
-    .content h1 {
-        font-size: 30px;
-    }
-}
-
-@media screen and (max-width: 500px){
-    .content p {
-        font-size: 20px;
-        line-height: 30px;
-    }
-    .content h1 {
-        font-size: 25px;
-    }
-}
-
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 400px){
     .index a {
-        padding: 15px;
         font-size: 20px;
+        padding: 15px;
     }
 }
