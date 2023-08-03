@@ -29,6 +29,7 @@ body {
 
 .content {
     padding: 10px;
+    float: left;
 }
 
 .content h1 {
@@ -41,67 +42,7 @@ body {
     line-height: 75px;
 }
 
-.mj {
+.images {
     float: right;
-    margin-top: -450px;
-    margin-right: 100px;
-    height: 500px;
-}
-
-.stevens {
-    float: right;
-    margin-top: -700px;
-    margin-right: 200px;
-    height: 300px;
-}
-
-@media screen and (max-width: 1600px) {
-    .mj, .stevens {
-        margin-right: 0px;
-    }
-}
-
-@media screen and (max-width: 1500px) {
-    .mj, .stevens {
-        margin-top: 0px;
-    }
-}
-
-@media screen and (max-width: 800px){
-    .content h1 {
-        font-size: 40px;
-    }
-    .content p {
-        font-size: 25px;
-        line-height: 50px;
-    }
-    .mj {
-        height: 350px;
-    }
-    .stevens {
-        height: 200px;
-    }
-}
-
-@media screen and (max-width: 550px){
-    .content h1 {
-        font-size: 30px;
-    }
-    .content p {
-        font-size: 17.5px;
-        line-height: 35px;
-    }
-    .mj {
-        height: 300px;
-    }
-    .stevens {
-        height: 150px;
-    }
-}
-
-@media screen and (max-width: 400px){
-    .index a {
-        font-size: 20px;
-        padding: 15px;
-    }
+    padding-top: 100px;
 }
