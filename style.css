@@ -1,48 +1,54 @@
 * {
     box-sizing: border-box;
-    font-family: monospace;
 }
 
 body {
-    margin: 0px;
-    background-color: lightgray;
+    background-color: rgb(25, 25, 25);
 }
 
-.index {
-    overflow: hidden;
-    background-color: black;
-}
-
-.index a {
+.main {
     float: left;
-    display: block;
-    text-align: center;
-    padding: 20px;
-    text-decoration: none;
-    font-size: 30px;
+}
+
+.main h1 {
+    font-size: 100px;
     color: white;
+    padding: 50px;
+    border-style: dotted;
+    border-color: black;
+    text-shadow: 5px 5px 10px black;
 }
 
-.index a:hover {
-    text-shadow: 2px 2px 5px red;
+.main p {
+    color: white;
+    font-size: 50px;
+    padding-left: 50px;
+    text-decoration: underline;
+    text-decoration-color: black;
 }
 
-.content {
-    padding: 10px;
+.stevens {
     float: left;
 }
 
-.content h1 {
-    font-size: 50px;
-    text-decoration: underline;
+.stevens img {
+    max-width: 100%;
+    width: 450px;
 }
 
-.content p {
-    font-size: 35px;
-    line-height: 75px;
-}
-
-.images {
+.face {
     float: right;
-    padding-top: 100px;
+}
+
+.face img {
+    padding: 50px;
+    max-width: 100%;
+}
+
+.links {
+    padding-left: 75px;
+}
+
+.links img {
+    width: 100px;
 }
