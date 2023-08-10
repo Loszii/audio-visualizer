@@ -3,7 +3,8 @@
 }
 
 body {
-    background-color: rgb(25, 25, 25);
+    background-image: linear-gradient(black, rgb(50, 50, 50));
+    background-attachment: fixed;
 }
 
 .main {
@@ -11,17 +12,19 @@ body {
 }
 
 .main h1 {
+    font-family: main;
     font-size: 100px;
     color: white;
     padding: 50px;
     border-style: dotted;
-    border-color: black;
+    border-color: rgb(50, 50, 50);
     text-shadow: 5px 5px 10px black;
 }
 
 .main p {
+    font-family: main;
     color: white;
-    font-size: 50px;
+    font-size: 40px;
     padding-left: 50px;
     text-decoration: underline;
     text-decoration-color: black;
@@ -33,11 +36,12 @@ body {
 
 .stevens img {
     max-width: 100%;
-    width: 450px;
+    width: 400px;
+    padding: 50px;
 }
 
 .face {
-    float: right;
+    float: left;
 }
 
 .face img {
@@ -51,4 +55,9 @@ body {
 
 .links img {
     width: 100px;
+}
+
+@font-face {
+    font-family: main;
+    src: url(fonts/KeepCalm-Medium.ttf);
 }
