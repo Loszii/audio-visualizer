@@ -7,7 +7,7 @@ body {
     background-attachment: fixed;
 }
 
-.main {
+div {
     float: left;
 }
 
@@ -21,6 +21,10 @@ body {
     text-shadow: 5px 5px 10px black;
 }
 
+.main h1:hover {
+    border-style: solid;
+}
+
 .main p {
     font-family: main;
     color: white;
@@ -30,30 +34,23 @@ body {
     text-decoration-color: black;
 }
 
-.stevens {
-    float: left;
-}
 
-.stevens img {
+#stevens {
     max-width: 100%;
     width: 400px;
     padding: 50px;
 }
 
-.face {
-    float: left;
-}
-
-.face img {
+#face {
     padding: 50px;
     max-width: 100%;
 }
 
-.links {
+#links {
     padding-left: 75px;
 }
 
-.links img {
+#links img {
     width: 100px;
 }
 
