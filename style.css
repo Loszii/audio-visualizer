@@ -48,13 +48,86 @@ div {
 
 #links {
     padding-left: 75px;
+    padding-bottom: 20px;
 }
 
 #links img {
     width: 100px;
+    margin-right: 10px;
+    transition: transform 0.5s;
+}
+
+#links img:hover {
+    transform: scale(1.1);
 }
 
 @font-face {
     font-family: main;
     src: url(fonts/KeepCalm-Medium.ttf);
+}
+
+
+@media screen and (max-width: 975px) {
+    #face, #stevens {
+        padding: 25px;
+    }
+
+    #face {
+        width: 300px;
+    }
+
+    #stevens {
+        width: 275px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .main h1 {
+        font-size: 50px;
+        padding: 25px;
+    }
+
+    .main p {
+        font-size: 20px;
+        padding-left: 25px;
+    }
+
+    #links img {
+        width: 75px;
+    }
+
+    #face {
+        width: 200px;
+    }
+
+    #stevens {
+        width: 175px;
+    }
+
+    #face, #stevens {
+        padding: 10px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    #face {
+        width: 175px;
+    }
+
+    #stevens {
+        width: 150px;
+    }
+    
+}
+
+@media screen and (max-width: 350px) {
+    #face, #stevens {
+        margin-left: auto;
+        margin-right: auto;
+        width: 75%;
+        display: block;
+    }
+    #links {
+        padding-left: 50px;
+    }
 }
