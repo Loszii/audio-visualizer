@@ -24,8 +24,23 @@
     display: block;
 }
 #fileupload {
-    top: 150px;
+    top: 75px;
+    left: 100px;
     position: absolute;
     color: white;
     z-index: 100;
+}
+#button1 {
+    position: absolute;
+    top: 50px;
+    right: 200px;
+    height: 50px;
+    width: 50px;
+}
+#button2 {
+    position: absolute;
+    top: 50px;
+    right: 250px;
+    height: 50px;
+    width: 50px;
 }

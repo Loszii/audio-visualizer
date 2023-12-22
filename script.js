@@ -7,10 +7,11 @@ let analyzer;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+const barButton = document.getElementById("button1");
+const circleButton = document.getElementById("button2");
 
 //clean up code and further personalize, change the audio control settings and front-end
 
-//add circle or bars visualizer buttons
 
 file.addEventListener("change", function(){
     const audio1 = document.getElementById("audio1");
@@ -32,26 +33,41 @@ file.addEventListener("change", function(){
     const dataArray = new Uint8Array(bufferLength); // array of unsigned integers up to 2^8, will be of length bufferLength
     const barWidth = ((canvas.width/2) / bufferLength); //divided by 2 for mirrored image
 
+    let x = 0 //change this to 1 when another button clicked which stops other
+    barButton.addEventListener("click", function(){
+        x = 0;
+    });
+    circleButton.addEventListener("click", function(){
+        x = 1;
+    });
+
     function animate(){
         analyzer.getByteFrequencyData(dataArray); // sets each element in our array to a freq
         ctx.clearRect(0, 0, canvas.width, canvas.height); //clears the entire canvas
-        drawCircle(dataArray, bufferLength);
-        //drawBars(barWidth, dataArray, bufferLength);
+        drawData(dataArray, bufferLength, barWidth, x)
         requestAnimationFrame(animate);
     }
     animate();
 });
 
+function drawData(dataArray, bufferLength, barWidth, x){
+    if (x == 0){
+        drawBars(barWidth, dataArray, bufferLength);
+    } else {
+        drawCircle(dataArray, bufferLength);
+    }
+}
+
 //maybe add different colored top like bars
 function drawCircle(dataArray, bufferLength){
-    let scale = 5;
+    let scale = 4;
     let barWidth = 5
     ctx.save(); //saves canvas
     ctx.translate(canvas.width / 2, canvas.height / 2); //setting origin to middle for rotation
     for(let i = 0; i < bufferLength; i++){
         let color = 255 - i; //make red slowly darker
         ctx.fillStyle = "rgb(" + color + ", 0, 0)";
-        ctx.fillRect(0, 0, barWidth, dataArray[i] * (2 - (0.01 * i))); // making the scale smaller as i gets bigger
+        ctx.fillRect(0, 0, barWidth, dataArray[i] * (2 - (0.005 * i))); // making the scale smaller as i gets bigger
         ctx.rotate(scale * (2 * Math.PI / bufferLength));
     }
     ctx.restore(); //loads origin back so can clear
