@@ -33,7 +33,7 @@ file.addEventListener("change", function(){
     const dataArray = new Uint8Array(bufferLength); // array of unsigned integers up to 2^8, will be of length bufferLength
     const barWidth = ((canvas.width/2) / bufferLength); //divided by 2 for mirrored image
 
-    let x = 0 //change this to 1 when another button clicked which stops other
+    let x = 0 //changes draw mode
     barButton.addEventListener("click", function(){
         x = 0;
     });
@@ -58,17 +58,19 @@ function drawData(dataArray, bufferLength, barWidth, x){
     }
 }
 
-//maybe add different colored top like bars
 function drawCircle(dataArray, bufferLength){
-    let scale = 4;
+    let rotations = 10;
     let barWidth = 5
     ctx.save(); //saves canvas
     ctx.translate(canvas.width / 2, canvas.height / 2); //setting origin to middle for rotation
     for(let i = 0; i < bufferLength; i++){
-        let color = 255 - i; //make red slowly darker
+        let heightScale = (1.75 - (0.003 * i))
+        let color = 255 - (0.75 *i); //make red slowly darker
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, dataArray[i] * heightScale, barWidth, 5);
         ctx.fillStyle = "rgb(" + color + ", 0, 0)";
-        ctx.fillRect(0, 0, barWidth, dataArray[i] * (2 - (0.005 * i))); // making the scale smaller as i gets bigger
-        ctx.rotate(scale * (2 * Math.PI / bufferLength));
+        ctx.fillRect(0, 0, barWidth, dataArray[i] * heightScale); // making the scale smaller as i gets bigger
+        ctx.rotate(rotations * (2 * Math.PI / bufferLength));
     }
     ctx.restore(); //loads origin back so can clear
 }
