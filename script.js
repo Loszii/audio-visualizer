@@ -1,43 +1,64 @@
 const canvas = document.getElementById("canvas1");
 const container = document.getElementById("container");
 const file = document.getElementById("fileupload");
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d"); //gets a canvas context object and sets the context to 2d
 let audioSource;
 let analyzer;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+
+//clean up code and further personalize, change the audio control settings and front-end
+
+//add circle or bars visualizer buttons
+
 file.addEventListener("change", function(){
-    const files = this.files;
     const audio1 = document.getElementById("audio1");
+    const files = this.files;
     audio1.src = URL.createObjectURL(files[0]);
     audio1.load();
     audio1.play();
 
-    const audioCtx = new AudioContext();
-    audioSource = audioCtx.createMediaElementSource(audio1);
-    analyzer = audioCtx.createAnalyser();
-    audioSource.connect(analyzer);
-    analyzer.connect(audioCtx.destination)
+    //below uses the built into browser web audio api
+    const audioCtx = new AudioContext(); //context, just like with canvas, relates to an object with all relevant information regarding audio
+    audioSource = audioCtx.createMediaElementSource(audio1); //sets audio 1 to source
+    analyzer = audioCtx.createAnalyser(); //makes an object to analyze sound data
+    audioSource.connect(analyzer); // connects our analyzer object and audio source object
+    analyzer.connect(audioCtx.destination) //connects our audio back from analyzer to out speakers
     analyzer.fftSize = 1024; // number of sample
-    const bufferLength = analyzer.frequencyBinCount; // always half of fft size and number of bars
-    const dataArray = new Uint8Array(bufferLength); // array of unsigned integers up to 2^8, will be of length buggerLength
 
-    const barWidth = ((canvas.width/2) / bufferLength) * 1/0.75; //divided by 2 for mirrored image and only showing 0.75 of data array
-    let barHeight;
-    let x;
+    //only want 20 out of 24 hz freq since that is human hearing range
+    const bufferLength = analyzer.frequencyBinCount * (20/24); // always half of fft size and number of bars
+    const dataArray = new Uint8Array(bufferLength); // array of unsigned integers up to 2^8, will be of length bufferLength
+    const barWidth = ((canvas.width/2) / bufferLength); //divided by 2 for mirrored image
 
     function animate(){
-        x = 0;
-        ctx.clearRect(0, 0, canvas.width, canvas.height); //clears the entire canvas
         analyzer.getByteFrequencyData(dataArray); // sets each element in our array to a freq
-        draw(barWidth, dataArray, bufferLength * 0.75, x);
+        ctx.clearRect(0, 0, canvas.width, canvas.height); //clears the entire canvas
+        drawCircle(dataArray, bufferLength);
+        //drawBars(barWidth, dataArray, bufferLength);
         requestAnimationFrame(animate);
     }
     animate();
 });
 
-function draw(barWidth, dataArray, bufferLength, x){
+//maybe add different colored top like bars
+function drawCircle(dataArray, bufferLength){
+    let scale = 5;
+    let barWidth = 5
+    ctx.save(); //saves canvas
+    ctx.translate(canvas.width / 2, canvas.height / 2); //setting origin to middle for rotation
+    for(let i = 0; i < bufferLength; i++){
+        let color = 255 - i; //make red slowly darker
+        ctx.fillStyle = "rgb(" + color + ", 0, 0)";
+        ctx.fillRect(0, 0, barWidth, dataArray[i] * (2 - (0.01 * i))); // making the scale smaller as i gets bigger
+        ctx.rotate(scale * (2 * Math.PI / bufferLength));
+    }
+    ctx.restore(); //loads origin back so can clear
+}
+
+function drawBars(barWidth, dataArray, bufferLength){
+    let x = 0;
     for(let i = 0; i < bufferLength; i++){
         barHeight = dataArray[i] * 2;
         ctx.fillStyle = "red";
