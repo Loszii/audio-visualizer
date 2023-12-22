@@ -7,8 +7,18 @@ let analyzer;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const barButton = document.getElementById("button1");
-const circleButton = document.getElementById("button2");
+//colors
+let red = 255;
+let green = 0;
+let blue = 0;
+
+//buttons
+const barButton = document.getElementById("barButton");
+const circleButton = document.getElementById("circleButton");
+const redButton = document.getElementById("red");
+const greenButton = document.getElementById("green");
+const blueButton = document.getElementById("blue");
+const whiteButton = document.getElementById("white");
 
 //clean up code and further personalize, change the audio control settings and front-end
 
@@ -33,12 +43,35 @@ file.addEventListener("change", function(){
     const dataArray = new Uint8Array(bufferLength); // array of unsigned integers up to 2^8, will be of length bufferLength
     const barWidth = ((canvas.width/2) / bufferLength); //divided by 2 for mirrored image
 
-    let x = 0 //changes draw mode
+    //modes
+    let x = 0 
     barButton.addEventListener("click", function(){
         x = 0;
     });
     circleButton.addEventListener("click", function(){
         x = 1;
+    });
+
+    //colors
+    redButton.addEventListener("click", function(){
+        red = 255;
+        blue = 0;
+        green = 0;
+    });
+    blueButton.addEventListener("click", function(){
+        red = 0;
+        blue = 255;
+        green = 0;
+    });
+    greenButton.addEventListener("click", function(){
+        red = 0;
+        blue = 0;
+        green = 255;
+    });
+    whiteButton.addEventListener("click", function(){
+        red = 255;
+        blue = 255;
+        green = 255;
     });
 
     function animate(){
@@ -65,10 +98,10 @@ function drawCircle(dataArray, bufferLength){
     ctx.translate(canvas.width / 2, canvas.height / 2); //setting origin to middle for rotation
     for(let i = 0; i < bufferLength; i++){
         let heightScale = (1.75 - (0.003 * i))
-        let color = 255 - (0.75 *i); //make red slowly darker
+        let darkScale = (0.75 *i); //make color slowly darker
         ctx.fillStyle = "black";
         ctx.fillRect(0, dataArray[i] * heightScale, barWidth, 5);
-        ctx.fillStyle = "rgb(" + color + ", 0, 0)";
+        ctx.fillStyle = "rgb(" + (red - darkScale) + "," + (green - darkScale) + "," + (blue - darkScale) + ")";
         ctx.fillRect(0, 0, barWidth, dataArray[i] * heightScale); // making the scale smaller as i gets bigger
         ctx.rotate(rotations * (2 * Math.PI / bufferLength));
     }
@@ -79,17 +112,17 @@ function drawBars(barWidth, dataArray, bufferLength){
     let x = 0;
     for(let i = 0; i < bufferLength; i++){
         barHeight = dataArray[i] * 2;
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "rgb(" + red + "," + green + "," + blue + ")";
         ctx.fillRect((canvas.width / 2) - x, canvas.height - barHeight - 15, barWidth, 15);
-        ctx.fillStyle = "darkred";
+        ctx.fillStyle = "rgb(" + red*0.5 + "," + green*0.5 + "," + blue*0.5 + ")";
         ctx.fillRect((canvas.width / 2) - x, canvas.height - barHeight, barWidth, barHeight);
         x += barWidth;
     }
     for(let i = 0; i < bufferLength; i++){
         barHeight = dataArray[i] * 2;
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "rgb(" + red + "," + green + "," + blue + ")";
         ctx.fillRect(x, canvas.height - barHeight - 15, barWidth, 15);
-        ctx.fillStyle = "darkred";
+        ctx.fillStyle = "rgb(" + red*0.5 + "," + green*0.5 + "," + blue*0.5 + ")";
         ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
         x += barWidth;
     }

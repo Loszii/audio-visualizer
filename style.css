@@ -20,27 +20,22 @@
 }
 #audio1 {
     width: 50%;
-    margin: 50px auto;
+    margin: auto;
     display: block;
 }
 #fileupload {
-    top: 75px;
-    left: 100px;
-    position: absolute;
-    color: white;
     z-index: 100;
+    margin-top: 15px;
+    color: white;
 }
-#button1 {
-    position: absolute;
-    top: 50px;
-    right: 200px;
-    height: 50px;
-    width: 50px;
+#buttons {
+    width: 50%;
+    display: flex;
+    margin: auto;
+    justify-content: center;
 }
-#button2 {
-    position: absolute;
-    top: 50px;
-    right: 250px;
+button {
+    z-index: 100;
     height: 50px;
     width: 50px;
 }

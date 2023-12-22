@@ -4,16 +4,22 @@
     <link rel="stylesheet" href="style.css">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="expires" content="-1">
+    <meta http-equiv="expires" content="0">
     <title>Loszi's Site</title>
 </head>
 <body>
     <div id="container">
+        <div id="buttons">
+            <input type="file" id="fileupload" accept="audio/*">
+            <button id="barButton">Bars</button>
+            <button id="circleButton">Circle</button>
+            <button id="red">Red</button>
+            <button id="green">Green</button>
+            <button id="blue">Blue</button>
+            <button id="white">White</button>
+        </div>
         <canvas id="canvas1"></canvas>
         <audio id="audio1" controls></audio>
-        <input type="file" id="fileupload" accept="audio/*">
-        <button id="button1">Bars</button>
-        <button id="button2">Circle</button>
     </div>
     <script src="script.js"></script>
 </body>
