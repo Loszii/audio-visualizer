@@ -1,3 +1,5 @@
+//to do: clean up code and work on front end
+
 const canvas = document.getElementById("canvas1");
 const container = document.getElementById("container");
 const file = document.getElementById("fileupload");
@@ -6,7 +8,6 @@ let audioSource;
 let analyzer;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-let tempVar = 0;
 let bufferLength;
 let xTracker;
 let newData;
@@ -36,16 +37,14 @@ file.addEventListener("change", function(){
     audio1.play();
 
     //below uses the built into browser web audio api
-    if(tempVar == 0){
-        const audioCtx = new AudioContext(); //context, just like with canvas, relates to an object with all relevant information regarding audio
-        audioSource = audioCtx.createMediaElementSource(audio1); //sets audio 1 to source
-        analyzer = audioCtx.createAnalyser(); //makes an object to analyze sound data
-        audioSource.connect(analyzer); // connects our analyzer object and audio source object
-        analyzer.connect(audioCtx.destination) //connects our audio back from analyzer to out speakers
-        analyzer.fftSize = 1024; // number of sample
-        tempVar = 1;
-    }
 
+    const audioCtx = new AudioContext(); //context, just like with canvas, relates to an object with all relevant information regarding audio
+    audioSource = audioCtx.createMediaElementSource(audio1); //sets audio 1 to source
+    analyzer = audioCtx.createAnalyser(); //makes an object to analyze sound data
+    audioSource.connect(analyzer); // connects our analyzer object and audio source object
+    analyzer.connect(audioCtx.destination) //connects our audio back from analyzer to out speakers
+    analyzer.fftSize = 1024; // number of sample
+    tempVar = 1;
     //only want 20 out of 24 hz freq since that is human hearing range
     bufferLength = Math.round(analyzer.frequencyBinCount * (20/24)); // always half of fft size and number of bars
     const dataArray = new Uint8Array(bufferLength); // array of unsigned integers up to 2^8, will be of length bufferLength
@@ -54,6 +53,15 @@ file.addEventListener("change", function(){
     xTracker = new Array(Math.round(bufferLength / simplificationFactor));
     newData = new Array(Math.round(bufferLength / simplificationFactor));
     initXTracker();
+
+    //saveing song name and removing files
+    const songName = files[0].name;
+    const head = document.createElement("h1");
+    const text = document.createTextNode(songName);
+    head.appendChild(text);
+    const element = document.getElementById("songData");
+    element.appendChild(head);
+    file.remove(); //must remove or drawLine bug
 
     //animation loop
     function animate(){
@@ -147,8 +155,6 @@ function drawBars(dataArray){
         x += barWidth;
     }
 }
-
-
 
 function initXTracker(){
     for(let i = 0; i < xTracker.length; i++){
