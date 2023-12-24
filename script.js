@@ -61,7 +61,17 @@ file.addEventListener("change", function(){
     head.appendChild(text);
     const element = document.getElementById("songData");
     element.appendChild(head);
+
+    const but = document.createElement("button");
+    const butText = document.createTextNode("Change");
+    but.appendChild(butText);
+    but.style = "width: 50px; height: 25px;"
+    element.appendChild(but)
     file.remove(); //must remove or drawLine bug
+
+    but.addEventListener("click", function(){
+        document.location.reload();
+    })
 
     //animation loop
     function animate(){
@@ -175,7 +185,7 @@ function sampleSimplifier(dataArray){
 
 function drawLines(dataArray){
     const scale = 0.035; //scale of speed
-    let y = 110;
+    let y = 130;
     newData = sampleSimplifier(dataArray);
     newDataLength = newData.length;
     const barHeight = canvas.height / newDataLength;

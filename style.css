@@ -45,9 +45,6 @@ button {
     width: 50px;
 }
 h1 {
-    position: absolute;
-    margin-top: -57.5px;
-    color: black;
+    color: white;
     font-size: 20px;
-    user-select: none;
 }
