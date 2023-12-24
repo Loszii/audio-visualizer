@@ -1,4 +1,4 @@
-//to do: clean up code and work on front end
+//to do: clean up code and work on front end, add rgb sliders, maybe more visualizers
 
 const canvas = document.getElementById("canvas1");
 const container = document.getElementById("container");
@@ -9,9 +9,6 @@ let analyzer;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 let bufferLength;
-let xTracker;
-let newData;
-let simplificationFactor = 4;
 
 //colors
 let red = 255;
@@ -44,17 +41,16 @@ file.addEventListener("change", function(){
     audioSource.connect(analyzer); // connects our analyzer object and audio source object
     analyzer.connect(audioCtx.destination) //connects our audio back from analyzer to out speakers
     analyzer.fftSize = 1024; // number of sample
-    tempVar = 1;
+
     //only want 20 out of 24 hz freq since that is human hearing range
     bufferLength = Math.round(analyzer.frequencyBinCount * (20/24)); // always half of fft size and number of bars
     const dataArray = new Uint8Array(bufferLength); // array of unsigned integers up to 2^8, will be of length bufferLength
 
     //for drawLines()
-    xTracker = new Array(Math.round(bufferLength / simplificationFactor));
-    newData = new Array(Math.round(bufferLength / simplificationFactor));
+    xTracker = new Array(bufferLength);
     initXTracker();
 
-    //saveing song name and removing files
+    //saving song name and removing files
     const songName = files[0].name;
     const head = document.createElement("h1");
     const text = document.createTextNode(songName);
@@ -167,33 +163,20 @@ function drawBars(dataArray){
 }
 
 function initXTracker(){
-    for(let i = 0; i < xTracker.length; i++){
+    for(let i = 0; i < bufferLength; i++){
         xTracker[i] = 0;
     }
-}
-
-function sampleSimplifier(dataArray){
-    let prevIndex = 0;
-    let dataIndex = 0
-    for(let i = 1; i < Math.round(bufferLength / simplificationFactor) + 1; i ++){
-        newData[dataIndex] = getAverage(dataArray.slice(prevIndex, i * simplificationFactor));
-        prevIndex = i * simplificationFactor;
-        dataIndex += 1;
-    }
-    return newData;
 }
 
 function drawLines(dataArray){
     const scale = 0.035; //scale of speed
     let y = 130;
-    newData = sampleSimplifier(dataArray);
-    newDataLength = newData.length;
-    const barHeight = canvas.height / newDataLength;
-    for(let i = 0; i < newDataLength; i++){ //to put back on screen
+    const barHeight = canvas.height / bufferLength;
+    for(let i = 0; i < bufferLength; i++){ //to put back on screen
         if (xTracker[i] - 1000 > canvas.width){
             xTracker[i] = 0;
         }
-        let barWidth = scale * getAverage(newData) * newData[i]; //width of trail and value used for speed
+        let barWidth = scale * getAverage(dataArray) * dataArray[i]; //width of trail and value used for speed
         if (barWidth > 0){ //remove non moving lines
             ctx.fillStyle = "rgb(" + red + "," + green + "," + blue + ")";
             ctx.fillRect(xTracker[i], y, barHeight, barHeight); //square in front
