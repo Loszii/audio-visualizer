@@ -174,15 +174,17 @@ function drawLines(dataArray){
     newDataLength = newData.length;
     const barHeight = canvas.height / newDataLength;
     for(let i = 0; i < newDataLength; i++){ //to put back on screen
-        if (xTracker[i] - 600 > canvas.width){
+        if (xTracker[i] - 1000 > canvas.width){
             xTracker[i] = 0;
         }
         let barWidth = scale * getAverage(newData) * newData[i]; //width of trail and value used for speed
-        ctx.fillStyle = "rgb(" + red + "," + green + "," + blue + ")";
-        ctx.fillRect(xTracker[i], y, barHeight, barHeight); //square in front
-        ctx.fillStyle = "rgb(" + red*0.5 + "," + green*0.5 + "," + blue*0.5 + ")";
-        ctx.fillRect(xTracker[i], y, -1 * barWidth, barHeight); //trail
-        xTracker[i] += barWidth; //movement
+        if (barWidth > 0){ //remove non moving lines
+            ctx.fillStyle = "rgb(" + red + "," + green + "," + blue + ")";
+            ctx.fillRect(xTracker[i], y, barHeight, barHeight); //square in front
+            ctx.fillStyle = "rgb(" + red*0.5 + "," + green*0.5 + "," + blue*0.5 + ")";
+            ctx.fillRect(xTracker[i], y, -1 * barWidth, barHeight); //trail
+            xTracker[i] += barWidth; //movement
+        }
         y += barHeight;
     }
 }
