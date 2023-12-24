@@ -146,18 +146,22 @@ function drawBars(dataArray){
     let x = 0;
     for(let i = 0; i < bufferLength; i++){
         barHeight = dataArray[i] * 2;
-        ctx.fillStyle = "rgb(" + red + "," + green + "," + blue + ")";
-        ctx.fillRect((canvas.width / 2) - x, canvas.height - barHeight - 15, barWidth, 15);
-        ctx.fillStyle = "rgb(" + red*0.5 + "," + green*0.5 + "," + blue*0.5 + ")";
-        ctx.fillRect((canvas.width / 2) - x, canvas.height - barHeight, barWidth, barHeight);
+        if (barHeight > 0){
+            ctx.fillStyle = "rgb(" + red + "," + green + "," + blue + ")";
+            ctx.fillRect((canvas.width / 2) - x, canvas.height - barHeight - 15, barWidth, 15);
+            ctx.fillStyle = "rgb(" + red*0.5 + "," + green*0.5 + "," + blue*0.5 + ")";
+            ctx.fillRect((canvas.width / 2) - x, canvas.height - barHeight, barWidth, barHeight);
+        }
         x += barWidth;
     }
     for(let i = 0; i < bufferLength; i++){
         barHeight = dataArray[i] * 2;
-        ctx.fillStyle = "rgb(" + red + "," + green + "," + blue + ")";
-        ctx.fillRect(x, canvas.height - barHeight - 15, barWidth, 15);
-        ctx.fillStyle = "rgb(" + red*0.5 + "," + green*0.5 + "," + blue*0.5 + ")";
-        ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+        if (barHeight > 0){
+            ctx.fillStyle = "rgb(" + red + "," + green + "," + blue + ")";
+            ctx.fillRect(x, canvas.height - barHeight - 15, barWidth, 15);
+            ctx.fillStyle = "rgb(" + red*0.5 + "," + green*0.5 + "," + blue*0.5 + ")";
+            ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+        }
         x += barWidth;
     }
 }
