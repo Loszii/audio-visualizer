@@ -1,4 +1,4 @@
-//to do: clean up code and work on front end, more visualizers, make module
+//to do: more visualizers, make module
 
 const canvas = document.getElementById("canvas1");
 const container = document.getElementById("container");
@@ -201,13 +201,14 @@ function initXTracker(){
 
 function drawLines(dataArray){
     const scale = 0.035; //scale of speed
-    let y = 115;
     const barHeight = canvas.height / bufferLength;
+    let y = 115;
+    let avg = getAverage(dataArray);
     for(let i = 0; i < bufferLength; i++){ //to put back on screen
-        if (xTracker[i] - 1000 > canvas.width){
+        let barWidth = scale * avg * dataArray[i]; //width of trail and value used for speed increment
+        if (xTracker[i] - barWidth > canvas.width){ //once edge of trail is off screen reset
             xTracker[i] = 0;
         }
-        let barWidth = scale * getAverage(dataArray) * dataArray[i]; //width of trail and value used for speed
         if (barWidth > 0){ //remove non moving lines
             ctx.fillStyle = "rgb(" + red + "," + green + "," + blue + ")";
             ctx.fillRect(xTracker[i], y, barHeight, barHeight); //square in front
