@@ -21,12 +21,32 @@ const redSlider = document.getElementById("redSlider");
 const greenSlider = document.getElementById("greenSlider");
 const blueSlider = document.getElementById("blueSlider");
 
+//coloring and memorization
+let red = parseInt(redSlider.value);
+if ("red" in sessionStorage){
+    red = sessionStorage.getItem("red");
+    redSlider.value = sessionStorage.getItem("red");
+}
+let green = parseInt(greenSlider.value);
+if ("green" in sessionStorage){
+    green = sessionStorage.getItem("green");
+    greenSlider.value = sessionStorage.getItem("green");
+}
+let blue = parseInt(blueSlider.value);
+if ("blue" in sessionStorage){
+    blue = sessionStorage.getItem("blue");
+    blueSlider.value = sessionStorage.getItem("blue");
+}
+
 //change song button creation and song name
 const head = document.createElement("h1");
 const but = document.createElement("button");
 const butText = document.createTextNode("Change");
 but.appendChild(butText);
 
+//applying previous colors
+changeColor();
+document.getElementById("fileLabel").style = "text-decoration: underline rgb(" + red + ", " + green + ", " + blue + "); text-shadow: 3px 2px 4px rgb(" + red + ", " + green + ", " + blue + ");"
 
 file.addEventListener("change", function(){
     //playing audio from file
@@ -88,30 +108,30 @@ lineButton.addEventListener("click", function(){
     choice = 2;
 });
 
-//sliders
-let red = parseInt(redSlider.value);
-let green = parseInt(greenSlider.value);
-let blue = parseInt(blueSlider.value);
+//sliders and coloring
 redSlider.addEventListener("input", function(){
     red = parseInt(redSlider.value);
-    changeButtonColor();
+    changeColor();
 });
 greenSlider.addEventListener("input", function(){
     green = parseInt(greenSlider.value);
-    changeButtonColor();
+    changeColor();
 });
 blueSlider.addEventListener("input", function(){
     blue = parseInt(blueSlider.value);
-    changeButtonColor();
+    changeColor();
 });
 
-function changeButtonColor(){
+function changeColor(){
     barButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
     circleButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
     lineButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
     but.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
     head.style = "text-decoration: underline rgb(" + red + ", " + green + ", " + blue + "); text-shadow: 3px 2px 4px rgb(" + red + ", " + green + ", " + blue + ");";
     audio1.style = "filter: drop-shadow(0px 0px 10px rgb(" + red + ", " + green + ", " + blue + "))";
+    sessionStorage.setItem("red", red);
+    sessionStorage.setItem("green", green);
+    sessionStorage.setItem("blue", blue);
 }
 
 //draw algorithms
