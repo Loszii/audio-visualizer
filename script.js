@@ -22,6 +22,10 @@ const greenSlider = document.getElementById("greenSlider");
 const blueSlider = document.getElementById("blueSlider");
 
 //coloring and memorization
+let visMode = 0;
+if ("visMode" in sessionStorage){
+    visMode = sessionStorage.getItem("visMode");
+}
 let red = parseInt(redSlider.value);
 if ("red" in sessionStorage){
     red = sessionStorage.getItem("red");
@@ -46,7 +50,7 @@ but.appendChild(butText);
 
 //applying previous colors
 changeColor();
-document.getElementById("fileLabel").style = "text-decoration: underline rgb(" + red + ", " + green + ", " + blue + "); text-shadow: 3px 2px 4px rgb(" + red + ", " + green + ", " + blue + ");"
+document.getElementById("fileLabel").style = "text-decoration: underline rgb(" + red + ", " + green + ", " + blue + "); text-shadow: 3px 2px 4px rgb(" + red + ", " + green + ", " + blue + ");";
 
 file.addEventListener("change", function(){
     //playing audio from file
@@ -61,7 +65,7 @@ file.addEventListener("change", function(){
     audioSource = audioCtx.createMediaElementSource(audio1); //sets audio 1 to source
     analyzer = audioCtx.createAnalyser(); //makes an object to analyze sound data
     audioSource.connect(analyzer); // connects our analyzer object and audio source object
-    analyzer.connect(audioCtx.destination) //connects our audio back from analyzer to out speakers
+    analyzer.connect(audioCtx.destination); //connects our audio back from analyzer to out speakers
     analyzer.fftSize = 1024; // number of sample
 
     //only want 20 out of 24 hz freq since that is human hearing range
@@ -84,7 +88,7 @@ file.addEventListener("change", function(){
 
     but.addEventListener("click", function(){
         document.location.reload();
-    })
+    });
 
     //animation loop
     function animate(){
@@ -97,15 +101,17 @@ file.addEventListener("change", function(){
 });
 
 //modes
-let choice = 0 
 barButton.addEventListener("click", function(){
-    choice = 0;
+    visMode = 0;
+    sessionStorage.setItem("visMode", 0);
 });
 circleButton.addEventListener("click", function(){
-    choice = 1;
+    visMode = 1;
+    sessionStorage.setItem("visMode", 1);
 });
 lineButton.addEventListener("click", function(){
-    choice = 2;
+    visMode = 2;
+    sessionStorage.setItem("visMode", 2);
 });
 
 //sliders and coloring
@@ -136,9 +142,9 @@ function changeColor(){
 
 //draw algorithms
 function drawData(dataArray){
-    if (choice == 0){
+    if (visMode == 0){
         drawBars(dataArray);
-    } else if(choice == 1){
+    } else if(visMode == 1){
         drawCircle(dataArray);
     } else{
         drawLines(dataArray);
@@ -147,11 +153,11 @@ function drawData(dataArray){
 
 function drawCircle(dataArray){
     const rotations = 10; //not exactly ten since bufferLength equation is irrational number
-    const barWidth = 5
+    const barWidth = 5;
     ctx.save(); //saves canvas
     ctx.translate(canvas.width / 2, canvas.height / 2); //setting origin to middle for rotation
     for(let i = 0; i < bufferLength; i++){
-        let heightScale = (1.75 - (0.003 * i))
+        let heightScale = (1.75 - (0.003 * i));
         let darkScale = 0.5 * i; //make color slowly darker
         ctx.fillStyle = "black";
         ctx.fillRect(0, dataArray[i] * heightScale, barWidth, 5);
@@ -215,7 +221,7 @@ function drawLines(dataArray){
 
 function getAverage(array){
     let sum = 0;
-    let length = array.length
+    let length = array.length;
     for(let i = 0; i < length; i++){
         sum += array[i];
     }
