@@ -9,20 +9,26 @@
 </head>
 <body>
     <div id="container">
-        <div id="buttons">
-            <button id="barButton">Bars</button>
-            <button id="circleButton">Circle</button>
-            <button id="lineButton">Lines</button>
-            <button id="red">Red</button>
-            <button id="green">Green</button>
-            <button id="blue">Blue</button>
-            <button id="white">White</button>
+        <div id ="content">
+            <div id="songData">
+                <label for="fileupload" id="fileLabel">
+                    Click To Upload File
+                    <input type="file" id="fileupload" accept="audio/*">
+                </label>
+            </div>
+            <audio id="audio1" controls></audio>
+            <div id="buttons">
+                <button id="barButton">Bars</button>
+                <button id="circleButton">Circle</button>
+                <button id="lineButton">Lines</button>
+            </div>
+            <div id="sliders">
+                <input id ="redSlider" type="range" min="0" max="255" value = "255">
+                <input id ="greenSlider" type="range" min="0" max="255" value = "255">
+                <input id ="blueSlider" type="range" min="0" max="255" value = "255">
+            </div>
         </div>
         <canvas id="canvas1"></canvas>
-        <audio id="audio1" controls></audio>
-        <div id="songData">
-            <input type="file" id="fileupload" accept="audio/*">
-        </div>
     </div>
     <script src="script.js"></script>
 </body>

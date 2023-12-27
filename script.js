@@ -1,4 +1,4 @@
-//to do: clean up code and work on front end, add rgb sliders, maybe more visualizers
+//to do: clean up code and work on front end, more visualizers, make module
 
 const canvas = document.getElementById("canvas1");
 const container = document.getElementById("container");
@@ -9,25 +9,27 @@ let analyzer;
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 let bufferLength;
-
-//colors
-let red = 255;
-let green = 255;
-let blue = 255;
+const audio1 = document.getElementById("audio1");
 
 //buttons
 const barButton = document.getElementById("barButton");
 const circleButton = document.getElementById("circleButton");
 const lineButton = document.getElementById("lineButton");
-const redButton = document.getElementById("red");
-const greenButton = document.getElementById("green");
-const blueButton = document.getElementById("blue");
-const whiteButton = document.getElementById("white");
 
-//fix error when picking new song
+//sliders
+const redSlider = document.getElementById("redSlider");
+const greenSlider = document.getElementById("greenSlider");
+const blueSlider = document.getElementById("blueSlider");
+
+//change song button creation and song name
+const head = document.createElement("h1");
+const but = document.createElement("button");
+const butText = document.createTextNode("Change");
+but.appendChild(butText);
+
+
 file.addEventListener("change", function(){
     //playing audio from file
-    const audio1 = document.getElementById("audio1");
     const files = this.files;
     audio1.src = URL.createObjectURL(files[0]);
     audio1.load();
@@ -51,19 +53,14 @@ file.addEventListener("change", function(){
     initXTracker();
 
     //saving song name and removing files
-    const songName = files[0].name;
-    const head = document.createElement("h1");
+    const songName = getSongName(files[0].name);
     const text = document.createTextNode(songName);
     head.appendChild(text);
     const element = document.getElementById("songData");
     element.appendChild(head);
 
-    const but = document.createElement("button");
-    const butText = document.createTextNode("Change");
-    but.appendChild(butText);
-    but.style = "width: 50px; height: 25px;"
-    element.appendChild(but)
-    file.remove(); //must remove or drawLine bug
+    element.appendChild(but);
+    document.getElementById("fileLabel").remove(); //must remove or drawLine bug
 
     but.addEventListener("click", function(){
         document.location.reload();
@@ -91,27 +88,31 @@ lineButton.addEventListener("click", function(){
     choice = 2;
 });
 
-//colors
-redButton.addEventListener("click", function(){
-    red = 255;
-    blue = 0;
-    green = 0;
+//sliders
+let red = parseInt(redSlider.value);
+let green = parseInt(greenSlider.value);
+let blue = parseInt(blueSlider.value);
+redSlider.addEventListener("input", function(){
+    red = parseInt(redSlider.value);
+    changeButtonColor();
 });
-blueButton.addEventListener("click", function(){
-    red = 0;
-    blue = 255;
-    green = 0;
+greenSlider.addEventListener("input", function(){
+    green = parseInt(greenSlider.value);
+    changeButtonColor();
 });
-greenButton.addEventListener("click", function(){
-    red = 0;
-    blue = 0;
-    green = 255;
+blueSlider.addEventListener("input", function(){
+    blue = parseInt(blueSlider.value);
+    changeButtonColor();
 });
-whiteButton.addEventListener("click", function(){
-    red = 255;
-    blue = 255;
-    green = 255;
-});
+
+function changeButtonColor(){
+    barButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
+    circleButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
+    lineButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
+    but.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
+    head.style = "text-decoration: underline rgb(" + red + ", " + green + ", " + blue + "); text-shadow: 3px 2px 4px rgb(" + red + ", " + green + ", " + blue + ");";
+    audio1.style = "filter: drop-shadow(0px 0px 10px rgb(" + red + ", " + green + ", " + blue + "))";
+}
 
 //draw algorithms
 function drawData(dataArray){
@@ -131,7 +132,7 @@ function drawCircle(dataArray){
     ctx.translate(canvas.width / 2, canvas.height / 2); //setting origin to middle for rotation
     for(let i = 0; i < bufferLength; i++){
         let heightScale = (1.75 - (0.003 * i))
-        let darkScale = (0.75 *i); //make color slowly darker
+        let darkScale = 0.5 * i; //make color slowly darker
         ctx.fillStyle = "black";
         ctx.fillRect(0, dataArray[i] * heightScale, barWidth, 5);
         ctx.fillStyle = "rgb(" + (red - darkScale) + "," + (green - darkScale) + "," + (blue - darkScale) + ")";
@@ -174,7 +175,7 @@ function initXTracker(){
 
 function drawLines(dataArray){
     const scale = 0.035; //scale of speed
-    let y = 130;
+    let y = 115;
     const barHeight = canvas.height / bufferLength;
     for(let i = 0; i < bufferLength; i++){ //to put back on screen
         if (xTracker[i] - 1000 > canvas.width){
@@ -199,4 +200,11 @@ function getAverage(array){
         sum += array[i];
     }
     return sum / length;
+}
+
+function getSongName(name){
+    if (name.length > 20){
+        name = name.slice(0, 21) + "...";
+    }
+    return name;
 }
