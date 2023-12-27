@@ -200,21 +200,21 @@ function initXTracker(){
 }
 
 function drawLines(dataArray){
-    const scale = 0.035; //scale of speed
+    const scale = 0.025; //scale of speed
     const barHeight = canvas.height / bufferLength;
     let y = 115;
     let avg = getAverage(dataArray);
     for(let i = 0; i < bufferLength; i++){ //to put back on screen
-        let barWidth = scale * avg * dataArray[i]; //width of trail and value used for speed increment
-        if (xTracker[i] - barWidth > canvas.width){ //once edge of trail is off screen reset
-            xTracker[i] = 0;
+        let velocity = scale * avg * dataArray[i]; //width of trail and value used for speed increment
+        if (xTracker[i] - velocity > canvas.width){ //once edge of trail is off screen reset
+            xTracker[i] = -0.25 * velocity; //reset based on trail length
         }
-        if (barWidth > 0){ //remove non moving lines
+        if (velocity > 0){ //remove non moving lines
             ctx.fillStyle = "rgb(" + red + "," + green + "," + blue + ")";
             ctx.fillRect(xTracker[i], y, barHeight, barHeight); //square in front
             ctx.fillStyle = "rgb(" + red*0.5 + "," + green*0.5 + "," + blue*0.5 + ")";
-            ctx.fillRect(xTracker[i], y, -1 * barWidth, barHeight); //trail
-            xTracker[i] += barWidth; //movement
+            ctx.fillRect(xTracker[i], y, -0.75 * velocity, barHeight); //trail 3/4 of velocity
+            xTracker[i] += velocity; //movement
         }
         y += barHeight;
     }
