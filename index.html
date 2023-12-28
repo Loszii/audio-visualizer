@@ -16,7 +16,12 @@
                     <input type="file" id="fileupload" accept="audio/*">
                 </label>
             </div>
-            <audio id="audio1" controls></audio>
+            <div id="audioControls">
+                <audio id="audio1"></audio>
+                <button id="playButton">Play</button>
+                <input id="timeSlider" type="range" value="0" min="0">
+                <h1 id="timeDisplay">0 / 0</h1>
+            </div>
             <div id="buttons">
                 <button id="barButton">Bars</button>
                 <button id="circleButton">Circle</button>
@@ -24,9 +29,9 @@
                 <button id="squareButton">Squares</button>
             </div>
             <div id="sliders">
-                <input id ="redSlider" type="range" min="0" max="255" value = "255">
-                <input id ="greenSlider" type="range" min="0" max="255" value = "255">
-                <input id ="blueSlider" type="range" min="0" max="255" value = "255">
+                <input id="redSlider" type="range" min="0" max="255" value="255">
+                <input id="greenSlider" type="range" min="0" max="255" value="255">
+                <input id="blueSlider" type="range" min="0" max="255" value="255">
             </div>
         </div>
         <canvas id="canvas1"></canvas>

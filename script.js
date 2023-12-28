@@ -1,4 +1,4 @@
-//to do: make module and custon audio controls
+//to do: make module, hide audio controls until song loaded, maybe same with song name and change button instead of making in here
 
 const canvas = document.getElementById("canvas1");
 const container = document.getElementById("container");
@@ -10,34 +10,38 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 let bufferLength;
 const audio1 = document.getElementById("audio1");
+const timeDisplay = document.getElementById("timeDisplay"); //for time length h1
 
 //buttons
 const barButton = document.getElementById("barButton");
 const circleButton = document.getElementById("circleButton");
 const lineButton = document.getElementById("lineButton");
 const squareButton = document.getElementById("squareButton");
+const playButton = document.getElementById("playButton");
+const fileButton = document.getElementById("fileLabel");
 
 //sliders
 const redSlider = document.getElementById("redSlider");
 const greenSlider = document.getElementById("greenSlider");
 const blueSlider = document.getElementById("blueSlider");
+const timeSlider = document.getElementById("timeSlider");
 
 //coloring and memorization
 let visMode = 0;
 if ("visMode" in sessionStorage) {
     visMode = sessionStorage.getItem("visMode");
 }
-let red = parseInt(redSlider.value);
+let red = redSlider.valueAsNumber;
 if ("red" in sessionStorage) {
     red = sessionStorage.getItem("red");
     redSlider.value = sessionStorage.getItem("red");
 }
-let green = parseInt(greenSlider.value);
+let green = greenSlider.valueAsNumber;
 if ("green" in sessionStorage) {
     green = sessionStorage.getItem("green");
     greenSlider.value = sessionStorage.getItem("green");
 }
-let blue = parseInt(blueSlider.value);
+let blue = blueSlider.valueAsNumber;
 if ("blue" in sessionStorage) {
     blue = sessionStorage.getItem("blue");
     blueSlider.value = sessionStorage.getItem("blue");
@@ -51,17 +55,31 @@ but.appendChild(butText);
 
 //applying previous colors
 changeColor();
-document.getElementById("fileLabel").style = "text-decoration: underline rgb(" + red + ", " + green + ", " + blue + "); text-shadow: 3px 2px 4px rgb(" + red + ", " + green + ", " + blue + ");";
+
+//custom audio controls
+playButton.addEventListener("click", function() {
+    if (audio1.paused) {
+        audio1.play();
+    } else {
+        audio1.pause();
+    }
+});
+timeSlider.addEventListener("input", function(){
+    audio1.currentTime = timeSlider.valueAsNumber;
+});
+
 
 file.addEventListener("change", function(){
     //playing audio from file
     const files = this.files;
     audio1.src = URL.createObjectURL(files[0]);
     audio1.load();
+    audio1.onloadedmetadata = function(){ //setting timeSlider max
+        timeSlider.max = audio1.duration;
+    }
     audio1.play();
 
     //below uses the built into browser web audio api
-
     const audioCtx = new AudioContext(); //context, just like with canvas, relates to an object with all relevant information regarding audio
     audioSource = audioCtx.createMediaElementSource(audio1); //sets audio 1 to source
     analyzer = audioCtx.createAnalyser(); //makes an object to analyze sound data
@@ -85,7 +103,7 @@ file.addEventListener("change", function(){
     element.appendChild(head);
 
     element.appendChild(but);
-    document.getElementById("fileLabel").remove(); //must remove or drawLine bug
+    fileButton.remove(); //removing file choice
 
     but.addEventListener("click", function(){
         document.location.reload();
@@ -96,6 +114,8 @@ file.addEventListener("change", function(){
         analyzer.getByteFrequencyData(dataArray); // sets each element in our array to a freq
         ctx.clearRect(0, 0, canvas.width, canvas.height); //clears the entire canvas
         drawData(dataArray);
+        timeSlider.valueAsNumber = audio1.currentTime;
+        timeDisplay.innerHTML = getMinutes(timeSlider.valueAsNumber) + "/" + getMinutes(timeSlider.max);
         requestAnimationFrame(animate);
     }
     animate();
@@ -121,15 +141,15 @@ squareButton.addEventListener("click", function(){
 
 //sliders and coloring
 redSlider.addEventListener("input", function(){
-    red = parseInt(redSlider.value);
+    red = redSlider.valueAsNumber;
     changeColor();
 });
 greenSlider.addEventListener("input", function(){
-    green = parseInt(greenSlider.value);
+    green = greenSlider.valueAsNumber;
     changeColor();
 });
 blueSlider.addEventListener("input", function(){
-    blue = parseInt(blueSlider.value);
+    blue = blueSlider.valueAsNumber;
     changeColor();
 });
 
@@ -138,9 +158,11 @@ function changeColor(){
     circleButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
     lineButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
     squareButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
+    playButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
     but.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
     head.style = "text-decoration: underline rgb(" + red + ", " + green + ", " + blue + "); text-shadow: 3px 2px 4px rgb(" + red + ", " + green + ", " + blue + ");";
-    audio1.style = "filter: drop-shadow(0px 0px 10px rgb(" + red + ", " + green + ", " + blue + "))";
+    fileButton.style = "text-decoration: underline rgb(" + red + ", " + green + ", " + blue + "); text-shadow: 3px 2px 4px rgb(" + red + ", " + green + ", " + blue + ");";
+    timeSlider.style = "accent-color: rgb(" + red + ", " + green + ", " + blue + "); filter: drop-shadow(0px 0px 4px rgb(" + red + ", " + green + ", " + blue + "));";
     sessionStorage.setItem("red", red);
     sessionStorage.setItem("green", green);
     sessionStorage.setItem("blue", blue);
@@ -263,4 +285,15 @@ function getSongName(name){
         name = name.slice(0, 21) + "...";
     }
     return name;
+}
+
+function getMinutes(seconds){
+    let mins = (seconds / 60);
+    mins = mins.toString().split(".")[0];
+    let remainder = seconds % 60;
+    remainder = remainder.toString().split(".")[0]
+    if (remainder.length < 2) {
+        remainder = "0" + remainder;
+    }
+    return mins + ":" + remainder;
 }
