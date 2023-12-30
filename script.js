@@ -1,4 +1,5 @@
-//to do: make module, hide audio controls until song loaded, maybe same with song name and change button instead of making in here
+//to do: make module, maybe memorize song and let user pick song while current still playing aka reload after
+//next visualizer a wave that moves fast freq to the left and writes new ones from right to left
 
 const canvas = document.getElementById("canvas1");
 const container = document.getElementById("container");
@@ -10,15 +11,17 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 let bufferLength;
 const audio1 = document.getElementById("audio1");
-const timeDisplay = document.getElementById("timeDisplay"); //for time length h1
+const timeDisplay = document.getElementById("timeDisplay"); // 0:00 / 0:00
 
 //buttons
 const barButton = document.getElementById("barButton");
 const circleButton = document.getElementById("circleButton");
 const lineButton = document.getElementById("lineButton");
 const squareButton = document.getElementById("squareButton");
-const playButton = document.getElementById("playButton");
+const pauseButton = document.getElementById("pauseButton");
 const fileButton = document.getElementById("fileLabel");
+const titleText = document.getElementById("titleText");
+const changeButton = document.getElementById("changeButton");
 
 //sliders
 const redSlider = document.getElementById("redSlider");
@@ -47,21 +50,17 @@ if ("blue" in sessionStorage) {
     blueSlider.value = sessionStorage.getItem("blue");
 }
 
-//change song button creation and song name
-const head = document.createElement("h1");
-const but = document.createElement("button");
-const butText = document.createTextNode("Change");
-but.appendChild(butText);
-
 //applying previous colors
 changeColor();
 
 //custom audio controls
-playButton.addEventListener("click", function() {
+pauseButton.addEventListener("click", function() {
     if (audio1.paused) {
         audio1.play();
+        pauseButton.innerHTML = "| |";
     } else {
         audio1.pause();
+        pauseButton.innerHTML = "&#9658;";
     }
 });
 timeSlider.addEventListener("input", function(){
@@ -98,14 +97,17 @@ file.addEventListener("change", function(){
     //saving song name and removing files
     const songName = getSongName(files[0].name);
     const text = document.createTextNode(songName);
-    head.appendChild(text);
-    const element = document.getElementById("songData");
-    element.appendChild(head);
-
-    element.appendChild(but);
+    titleText.appendChild(text);
     fileButton.remove(); //removing file choice
+    //making elements appear
+    titleText.style.display = "inline-block";
+    changeButton.style.display = "inline-block"
+    timeSlider.style.display = "inline-block";
+    timeDisplay.style.display = "inline-block";
+    pauseButton.style.display = "inline-block";
+    changeColor(); //update colors now that visible
 
-    but.addEventListener("click", function(){
+    changeButton.addEventListener("click", function(){
         document.location.reload();
     });
 
@@ -154,15 +156,18 @@ blueSlider.addEventListener("input", function(){
 });
 
 function changeColor(){
-    barButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
-    circleButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
-    lineButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
-    squareButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
-    playButton.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
-    but.style = "border-color: rgb(" + red + ", " + green + ", " + blue + ");";
-    head.style = "text-decoration: underline rgb(" + red + ", " + green + ", " + blue + "); text-shadow: 3px 2px 4px rgb(" + red + ", " + green + ", " + blue + ");";
-    fileButton.style = "text-decoration: underline rgb(" + red + ", " + green + ", " + blue + "); text-shadow: 3px 2px 4px rgb(" + red + ", " + green + ", " + blue + ");";
-    timeSlider.style = "accent-color: rgb(" + red + ", " + green + ", " + blue + "); filter: drop-shadow(0px 0px 4px rgb(" + red + ", " + green + ", " + blue + "));";
+    color = "rgb(" + red + ", " + green + ", " + blue + ")";
+    barButton.style = "border-color: " + color + ";"
+    circleButton.style = "border-color: " + color + ";";
+    lineButton.style = "border-color: " + color + ";";
+    squareButton.style = "border-color: " + color + ";";
+    fileButton.style = "text-decoration: underline " + color + "; text-shadow: 3px 2px 4px " + color + ";";
+    if (changeButton.style.display == "inline-block") {
+        changeButton.style = "display: inline-block; border-color: " + color + ";";
+        titleText.style = "display: inline-block; text-decoration: underline " + color + "; text-shadow: 3px 2px 4px " + color + ";";
+        pauseButton.style = "display: inline-block; border-color: " + color + ";";
+        timeSlider.style = "display: inline-block; accent-color: " + color + "; filter: drop-shadow(0px 0px 4px " + color + ");";
+    }
     sessionStorage.setItem("red", red);
     sessionStorage.setItem("green", green);
     sessionStorage.setItem("blue", blue);
@@ -281,8 +286,8 @@ function getAverage(array){
 }
 
 function getSongName(name){
-    if (name.length > 20) {
-        name = name.slice(0, 21) + "...";
+    if (name.length > 25) {
+        name = name.slice(0, 25) + "...";
     }
     return name;
 }
