@@ -29,7 +29,7 @@
     width: 37.5%;
     margin: auto;
 }
-#fileupload {
+#fileUpload {
     display: none;
 }
 #fileLabel {
@@ -45,6 +45,7 @@
     justify-content: center;
 }
 #buttons {
+    gap: 5px;
     width: 12.5%;
     display: flex;
     margin: auto;
@@ -60,6 +61,7 @@
     accent-color: blue;
 }
 #sliders {
+    gap: 5px;
     display: flex;
     justify-content: center;
     width: 25%;
