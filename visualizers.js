@@ -41,18 +41,7 @@ function drawCircle(dataArray, bufferLength, canvas, ctx, red, green, blue){
     ctx.restore(); //loads origin back so can clear
 }
 
-let xTracker; //try to remove
-function initXTracker(bufferLength){
-    xTracker = new Array(bufferLength);
-    for (let i = 0; i < bufferLength; i++) {
-        xTracker[i] = 0;
-    }
-    return xTracker;
-}
-function drawLines(dataArray, bufferLength, canvas, ctx, red, green, blue){
-    if (xTracker == undefined) {
-        initXTracker(bufferLength);
-    }
+function drawLines(dataArray, bufferLength, canvas, ctx, red, green, blue, xTracker){
     const scale = 0.025; //scale of speed
     const barHeight = canvas.height / bufferLength;
     let y = 115;
@@ -69,6 +58,7 @@ function drawLines(dataArray, bufferLength, canvas, ctx, red, green, blue){
         }
         y += barHeight;
     }
+    return xTracker;
 }
 
 function drawSquares(dataArray, bufferLength, canvas, ctx, red, green, blue){

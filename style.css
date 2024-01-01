@@ -26,11 +26,8 @@
     display: flex;
     justify-content: center;
     z-index: 1;
-    width: 37.5%;
+    width: 35%;
     margin: auto;
-}
-#fileUpload {
-    display: none;
 }
 #fileLabel {
     z-index: 1;
@@ -39,14 +36,14 @@
     font-weight: bold;
 }
 #songData {
-    width: 37.5%;
+    width: 35%;
     display: flex;
     margin: auto;
     justify-content: center;
 }
 #buttons {
     gap: 5px;
-    width: 12.5%;
+    width: 25%;
     display: flex;
     margin: auto;
     justify-content: center;
@@ -61,41 +58,29 @@
     accent-color: blue;
 }
 #sliders {
+    z-index: 1;
     gap: 5px;
     display: flex;
     justify-content: center;
-    width: 25%;
+    width: 30%;
+    margin-right: 15px;
 }
 #timeSlider {
     width: 50%;
-    display: none;
 }
 #timeDisplay {
     font-size: 20px;
-    display: none;
     margin-left: 5px;
     margin-top: 2px;
+    color: white;
+    display: inline;
 }
 #pauseButton {
     height: 30px;
     width: 30px;
+}
+#fileUpload {
     display: none;
-}
-#titleText {
-    display: none;
-}
-#changeButton {
-    display: none;
-}
-h1 {
-    color: white;
-    font-size: 25px;
-    margin-right: 20px;
-    margin-top: 10px;
-    display: inline;
-}
-input {
-    z-index: 1;
 }
 button {
     background-color: black;

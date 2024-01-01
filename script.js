@@ -1,8 +1,7 @@
 import { drawBars, drawCircle, drawLines, drawSquares } from "/visualizers.js";
 
-//to do:  maybe memorize song and let user pick song while current still playing aka reload after
 //next visualizer a wave that moves fast freq to the left and writes new ones from right to left
-
+//make change button upload new file
 
 //set canvas width and height
 function initCanvas(){
@@ -86,48 +85,54 @@ function main() {
         //playing audio from file
         const files = this.files;
         audio.src = URL.createObjectURL(files[0]);
+        document.getElementById("fileLabel").innerHTML = getSongName(files[0].name);
         audio.load();
         audio.play();
-
-        audioCtx = new AudioContext(); //object with context about audio
-        audioSource = audioCtx.createMediaElementSource(audio); //makes a media object with audio1
-        analyzer = audioCtx.createAnalyser(); //makes an object to analyze sound data
-        audioSource.connect(analyzer); // connects our analyzer and media object
-        analyzer.connect(audioCtx.destination); //connects our audio back from analyzer to sound output
-        analyzer.fftSize = 1024; // number of sample
-    
-        //only want 20 out of 24 hz freq since that is human hearing range
-        bufferLength = Math.round(analyzer.frequencyBinCount * (20/24)); // always half of fft size
-        dataArray = new Uint8Array(bufferLength);
-    
-        document.getElementById("fileLabel").remove(); //removing file choice
-        //making elements appear
-        document.getElementById("titleText").style.display = "inline-block";
-        document.getElementById("changeButton").style.display = "inline-block"
-        document.getElementById("timeSlider").style.display = "inline-block";
-        document.getElementById("timeDisplay").style.display = "inline-block";
-        document.getElementById("pauseButton").style.display = "inline-block";
-        document.getElementById("changeButton").addEventListener("click", function(){
-            document.location.reload();
-        });
+        if (!(dataArray)) {
+            audioCtx = new AudioContext(); //object with context about audio
+            audioSource = audioCtx.createMediaElementSource(audio); //makes a media object with audio1
+            analyzer = audioCtx.createAnalyser(); //makes an object to analyze sound data
+            audioSource.connect(analyzer); // connects our analyzer and media object
+            analyzer.connect(audioCtx.destination); //connects our audio back from analyzer to sound output
+            analyzer.fftSize = 1024; // number of sample
+        
+            //only want 20 out of 24 hz freq since that is human hearing range
+            bufferLength = Math.round(analyzer.frequencyBinCount * (20/24)); // always half of fft size
+            dataArray = new Uint8Array(bufferLength);
+        }
     
     
     audio.onloadedmetadata = function(){
         const timeSlider = document.getElementById("timeSlider");
-        const songName = getSongName(files[0].name);
-        const text = document.createTextNode(songName);
-        document.getElementById("titleText").appendChild(text);
         timeSlider.max = audio.duration;
 
+        let xTracker = new Array(bufferLength);
+        for (let i = 0; i < bufferLength; i++) {
+            xTracker[i] = 0;
+        }
+        //draw algorithms
+        function drawData(dataArray, bufferLength, canvas, ctx, red, green, blue, xTracker){
+            let visMode = sessionStorage.getItem("visMode");
+            if (visMode == 0) {
+                drawBars(dataArray, bufferLength, canvas, ctx, red, green, blue);
+            } else if (visMode == 1) {
+                drawCircle(dataArray, bufferLength, canvas, ctx, red, green, blue);
+            } else if (visMode == 2) {
+                xTracker = drawLines(dataArray, bufferLength, canvas, ctx, red, green, blue, xTracker);
+            } else {
+                drawSquares(dataArray, bufferLength, canvas, ctx, red, green, blue);
+            }
+        }
+        //animation loop
         function animate(){
             let red = sessionStorage.getItem("red");
             let green = sessionStorage.getItem("green");
             let blue = sessionStorage.getItem("blue");
-
             changeColor(red, green, blue);
+
             analyzer.getByteFrequencyData(dataArray); // sets each element in our array to a freq
             ctx.clearRect(0, 0, canvas.width, canvas.height); //clears the entire canvas
-            drawData(dataArray, bufferLength, canvas, ctx, red, green, blue);
+            drawData(dataArray, bufferLength, canvas, ctx, red, green, blue, xTracker);
 
             timeSlider.valueAsNumber = audio.currentTime;
             document.getElementById("timeDisplay").innerHTML = getMinutes(timeSlider.valueAsNumber) + "/" + getMinutes(timeSlider.max);
@@ -162,34 +167,15 @@ function changeColor(red, green, blue){
     document.getElementById("circleButton").style = "border-color: " + color + ";";
     document.getElementById("lineButton").style = "border-color: " + color + ";";
     document.getElementById("squareButton").style = "border-color: " + color + ";";
-    if (document.getElementById("changeButton").style.display == "inline-block") {
-        document.getElementById("changeButton").style = "display: inline-block; border-color: " + color + ";";
-        document.getElementById("titleText").style = "display: inline-block; text-decoration: underline " + color + "; text-shadow: 3px 2px 4px " + color + ";";
-        document.getElementById("pauseButton").style = "display: inline-block; border-color: " + color + ";";
-        document.getElementById("timeSlider").style = "display: inline-block; accent-color: " + color + "; filter: drop-shadow(0px 0px 4px " + color + ");";
-    } else {
-        document.getElementById("fileLabel").style = "text-decoration: underline " + color + "; text-shadow: 3px 2px 4px " + color + ";";
-    }
+    document.getElementById("pauseButton").style = "border-color: " + color + ";";
+    document.getElementById("timeSlider").style = "accent-color: " + color + "; filter: drop-shadow(0px 0px 4px " + color + ");";
+    document.getElementById("fileLabel").style = "text-decoration: underline " + color + "; text-shadow: 3px 2px 4px " + color + ";";
 }
 
-//draw algorithms
-function drawData(dataArray, bufferLength, canvas, ctx, red, green, blue){
-    let visMode = sessionStorage.getItem("visMode");
-    if (visMode == 0) {
-        drawBars(dataArray, bufferLength, canvas, ctx, red, green, blue);
-    } else if (visMode == 1) {
-        drawCircle(dataArray, bufferLength, canvas, ctx, red, green, blue);
-    } else if (visMode == 2) {
-        drawLines(dataArray, bufferLength, canvas, ctx, red, green, blue);
-    } else {
-        drawSquares(dataArray, bufferLength, canvas, ctx, red, green, blue);
-    }
-}
-
-//edits file name to be 25 letters so fits
+//edits file name to be 30 letters so fits
 function getSongName(name){
-    if (name.length > 25) {
-        name = name.slice(0, 25) + "...";
+    if (name.length > 30) {
+        name = name.slice(0, 30) + "...";
     }
     return name;
 }
