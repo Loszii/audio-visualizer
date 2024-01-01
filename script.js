@@ -1,29 +1,24 @@
+import { drawBars, drawCircle, drawLines, drawSquares } from "/visualizers.js";
+
 //to do:  maybe memorize song and let user pick song while current still playing aka reload after
 //next visualizer a wave that moves fast freq to the left and writes new ones from right to left
 
-import { drawBars, drawCircle, drawLines, drawSquares, initXTracker } from "/visualizers.js";
 
-//function calls
-initColors();
-initMode();
-initCanvas();
-connectTime();
-updateMode();
-main();
-
-//functions
+//set canvas width and height
 function initCanvas(){
     const canvas = document.getElementById("canvas1");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
 
+//sets visMode default to bars if none in mem
 function initMode(){
     if (!("visMode" in sessionStorage)) {
         sessionStorage.setItem("visMode", 0);
     }
 }
 
+//sets colors from storage if available or sets to white, also adds listeners for rgb sliders
 function initColors(){
     const redSlider = document.getElementById("redSlider");
     const greenSlider = document.getElementById("greenSlider");
@@ -59,6 +54,7 @@ function initColors(){
     changeColor(sessionStorage.getItem("red"), sessionStorage.getItem("green"), sessionStorage.getItem("blue"));
 }
 
+//event listeners for timeSlider and pauseButton
 function connectTime() {
     const audio = document.getElementById("audio1")
     document.getElementById("timeSlider").addEventListener("input", function(){
@@ -74,38 +70,36 @@ function connectTime() {
     
 }
 
-//file uplaoded
+//main function with animation loop inside
 function main() {
     const audio = document.getElementById("audio1");
     const canvas = document.getElementById("canvas1");
     const ctx = canvas.getContext("2d");
+    let audioCtx;
+    let audioSource;
+    let analyzer;
+    let bufferLength;
+    let dataArray;
 
+    //file uploaded
     document.getElementById("fileUpload").addEventListener("change", function(){
         //playing audio from file
         const files = this.files;
         audio.src = URL.createObjectURL(files[0]);
         audio.load();
-        audio.onloadedmetadata = function(){ //setting timeSlider max
-            document.getElementById("timeSlider").max = audio.duration;
-        }
         audio.play();
-    
-        const audioCtx = new AudioContext(); //object with context about audio
-        let audioSource = audioCtx.createMediaElementSource(audio); //makes a media object with audio1
-        let analyzer = audioCtx.createAnalyser(); //makes an object to analyze sound data
+
+        audioCtx = new AudioContext(); //object with context about audio
+        audioSource = audioCtx.createMediaElementSource(audio); //makes a media object with audio1
+        analyzer = audioCtx.createAnalyser(); //makes an object to analyze sound data
         audioSource.connect(analyzer); // connects our analyzer and media object
         analyzer.connect(audioCtx.destination); //connects our audio back from analyzer to sound output
         analyzer.fftSize = 1024; // number of sample
     
         //only want 20 out of 24 hz freq since that is human hearing range
-        const bufferLength = Math.round(analyzer.frequencyBinCount * (20/24)); // always half of fft size
-        const dataArray = new Uint8Array(bufferLength);
-        initXTracker(bufferLength);
+        bufferLength = Math.round(analyzer.frequencyBinCount * (20/24)); // always half of fft size
+        dataArray = new Uint8Array(bufferLength);
     
-        //saving song name and removing files
-        const songName = getSongName(files[0].name);
-        const text = document.createTextNode(songName);
-        document.getElementById("titleText").appendChild(text);
         document.getElementById("fileLabel").remove(); //removing file choice
         //making elements appear
         document.getElementById("titleText").style.display = "inline-block";
@@ -113,14 +107,19 @@ function main() {
         document.getElementById("timeSlider").style.display = "inline-block";
         document.getElementById("timeDisplay").style.display = "inline-block";
         document.getElementById("pauseButton").style.display = "inline-block";
-    
         document.getElementById("changeButton").addEventListener("click", function(){
             document.location.reload();
         });
     
-        //animation loop
+    
+    audio.onloadedmetadata = function(){
+        const timeSlider = document.getElementById("timeSlider");
+        const songName = getSongName(files[0].name);
+        const text = document.createTextNode(songName);
+        document.getElementById("titleText").appendChild(text);
+        timeSlider.max = audio.duration;
+
         function animate(){
-            const timeSlider = document.getElementById("timeSlider");
             let red = sessionStorage.getItem("red");
             let green = sessionStorage.getItem("green");
             let blue = sessionStorage.getItem("blue");
@@ -129,15 +128,18 @@ function main() {
             analyzer.getByteFrequencyData(dataArray); // sets each element in our array to a freq
             ctx.clearRect(0, 0, canvas.width, canvas.height); //clears the entire canvas
             drawData(dataArray, bufferLength, canvas, ctx, red, green, blue);
+
             timeSlider.valueAsNumber = audio.currentTime;
             document.getElementById("timeDisplay").innerHTML = getMinutes(timeSlider.valueAsNumber) + "/" + getMinutes(timeSlider.max);
             updatePauseButton(document.getElementById("pauseButton"));
             requestAnimationFrame(animate);
         }
         animate();
+    }
     });
 }
 
+//event listeners for vis buttons
 function updateMode() {
     document.getElementById("barButton").addEventListener("click", function(){
         sessionStorage.setItem("visMode", 0);
@@ -153,6 +155,7 @@ function updateMode() {
     });
 }
 
+//changes front end color
 function changeColor(red, green, blue){
     let color = "rgb(" + red + ", " + green + ", " + blue + ")";
     document.getElementById("barButton").style = "border-color: " + color + ";"
@@ -211,3 +214,11 @@ function updatePauseButton(pauseButton){
         pauseButton.innerHTML = "| |";
     }
 }
+
+//function calls
+initColors();
+initMode();
+initCanvas();
+connectTime();
+updateMode();
+main();

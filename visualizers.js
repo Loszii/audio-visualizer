@@ -41,14 +41,18 @@ function drawCircle(dataArray, bufferLength, canvas, ctx, red, green, blue){
     ctx.restore(); //loads origin back so can clear
 }
 
-let xTracker;
+let xTracker; //try to remove
 function initXTracker(bufferLength){
     xTracker = new Array(bufferLength);
     for (let i = 0; i < bufferLength; i++) {
         xTracker[i] = 0;
     }
+    return xTracker;
 }
 function drawLines(dataArray, bufferLength, canvas, ctx, red, green, blue){
+    if (xTracker == undefined) {
+        initXTracker(bufferLength);
+    }
     const scale = 0.025; //scale of speed
     const barHeight = canvas.height / bufferLength;
     let y = 115;
@@ -98,4 +102,4 @@ function getAverage(array){
     return sum / length;
 }
 
-export { drawBars, drawCircle, drawLines, drawSquares, initXTracker };
+export { drawBars, drawCircle, drawLines, drawSquares };
