@@ -1,7 +1,4 @@
-import { drawBars, drawCircle, drawLines, drawSquares } from "/visualizers.js";
-
-//tunnel that you travel down, draw circle starting small in middle and get bigger until offscreen
-//freq can represent the gap between new circles drawn
+import { drawBars, drawCircle, drawLines, drawSquares, drawPulse} from "/visualizers.js";
 
 //main function with animation loop inside
 function main() {
@@ -29,6 +26,9 @@ function main() {
     });
     document.getElementById("squareButton").addEventListener("click", function(){
         visMode = 3;
+    });
+    document.getElementById("pulseButton").addEventListener("click", function(){
+        visMode = 4;
     });
 
     //event listeners for colors
@@ -71,6 +71,7 @@ function main() {
     audio.onloadedmetadata = function(){
         const timeSlider = document.getElementById("timeSlider");
         let xTracker = new Array(bufferLength);
+        let radiusTracker = [0, -700, -1400];
 
         timeSlider.max = audio.duration;
         for (let i = 0; i < bufferLength; i++) {
@@ -84,8 +85,10 @@ function main() {
                 drawCircle(dataArray, bufferLength, canvas, ctx, red, green, blue);
             } else if (visMode == 2) {
                 xTracker = drawLines(dataArray, bufferLength, canvas, ctx, red, green, blue, xTracker);
-            } else {
+            } else if (visMode == 3) {
                 drawSquares(dataArray, bufferLength, canvas, ctx, red, green, blue);
+            } else {
+                radiusTracker = drawPulse(dataArray, bufferLength, canvas, ctx, red, green, blue, radiusTracker);
             }
         }
         //animation loop
@@ -111,6 +114,7 @@ function changeColor(red, green, blue){
     document.getElementById("circleButton").style = "border-color: " + color + ";";
     document.getElementById("lineButton").style = "border-color: " + color + ";";
     document.getElementById("squareButton").style = "border-color: " + color + ";";
+    document.getElementById("pulseButton").style = "border-color: " + color + ";";
     document.getElementById("pauseButton").style = "border-color: " + color + ";";
     document.getElementById("timeSlider").style = "accent-color: " + color + "; filter: drop-shadow(0px 0px 4px " + color + ");";
     document.getElementById("fileLabel").style = "text-decoration: underline " + color + "; text-shadow: 3px 2px 4px " + color + ";";

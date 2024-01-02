@@ -71,16 +71,52 @@ function drawSquares(dataArray, bufferLength, canvas, ctx, red, green, blue){
         drawSquare(dataArray, i/10, 4/10,scale, y, avg, canvas, ctx, bufferLength);
         drawSquare(dataArray, i/10, 6/10,scale, y, avg, canvas, ctx, bufferLength);
     }
-    ctx.stroke();
 }
 function drawSquare(dataArray, xPos, yPos, scale, y, avg, canvas, ctx, bufferLength){
     ctx.save();
     ctx.translate(canvas.width * xPos, canvas.height *yPos + y);
+    ctx.beginPath();
     for (let i = 0; i < bufferLength; i++) {
         let squareLength = avg * scale * dataArray[i];
         ctx.strokeRect(-1 * squareLength / 2, -1 * squareLength / 2, squareLength, squareLength);
     }
+    ctx.closePath();
     ctx.restore();
+}
+
+function drawPulse(dataArray, bufferLength, canvas, ctx, red, green, blue, radiusTracker){ //draw one more 
+    const scale = 0.01;
+    let avg = getAverage(dataArray);
+    ctx.strokeStyle = "rgb(" + red + "," + green + "," + blue + ")";
+    ctx.lineWidth = 0.25;
+
+    for (let j = 0; j < radiusTracker.length; j++) {
+        for (let i = 0; i < bufferLength; i++) {
+            if (dataArray[i] != 0) {
+                let increment = scale * dataArray[i] * avg;
+                ctx.save();
+                ctx.translate(canvas.width / 2, canvas.height / 2)
+                if (radiusTracker[j] + increment > 0) { 
+                    ctx.beginPath();
+                    ctx.arc(0, 0, radiusTracker[j] + increment, 0, Math.PI * 2);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+                if (radiusTracker[j] - increment > 0) {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, radiusTracker[j] - increment, 0, Math.PI * 2);
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+        }
+        radiusTracker[j] += 1;
+        if (radiusTracker[j] > canvas.width / 2 + 512) {
+            radiusTracker[j] = -512;
+        }
+    }
+    return radiusTracker
 }
 
 function getAverage(array){
@@ -92,4 +128,4 @@ function getAverage(array){
     return sum / length;
 }
 
-export { drawBars, drawCircle, drawLines, drawSquares };
+export { drawBars, drawCircle, drawLines, drawSquares, drawPulse };
