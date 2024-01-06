@@ -1,5 +1,8 @@
 import { drawBars, drawCircle, drawLines, drawSquares, drawPulse} from "/visualizers.js";
 
+//to do: make colors that change with amount of each freq, should be a toggle feature
+//divide dataArray into 1/3 intervals and average each, maybe scale with volume aswell
+
 //main function with animation loop inside
 function main() {
     const audio = document.getElementById("audio1");
@@ -71,7 +74,7 @@ function main() {
     audio.onloadedmetadata = function(){
         const timeSlider = document.getElementById("timeSlider");
         let xTracker = new Array(bufferLength);
-        let radiusTracker = [0, -700, -1400];
+        let radiusTracker = [0, (-1/3) * (canvas.width / 2 + 1024), (-2/3) * (canvas.width / 2 + 1024)];
 
         timeSlider.max = audio.duration;
         for (let i = 0; i < bufferLength; i++) {
