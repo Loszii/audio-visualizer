@@ -1,20 +1,24 @@
-import { drawBars, drawCircle, drawLines, drawSquares, drawPulse} from "/visualizers.js";
+import { drawBars, drawCircle, drawLines, drawSquares, drawPulse, getAverage } from "/visualizers.js";
 
-//to do: make colors that change with amount of each freq, should be a toggle feature
-//divide dataArray into 1/3 intervals and average each, maybe scale with volume aswell
+//to do: fix color updater button and sliders
+//maybe remove bufferlength and just use dataArray.length
 
 //main function with animation loop inside
 function main() {
     const audio = document.getElementById("audio1");
     const canvas = document.getElementById("canvas1");
     const ctx = canvas.getContext("2d");
-    let visMode = 0;
-    let red = 255, green = 255, blue = 255;
     let audioCtx;
     let audioSource;
     let analyzer;
     let bufferLength;
     let dataArray;
+    //initial values
+    let colorDisplay = 0;
+    let colorCount = 0;
+    let colorMode = 1;
+    let visMode = 0;
+    let red = 255, green = 255, blue = 255;
     changeColor(red, green, blue);
 
     //event listeners for vis buttons
@@ -35,17 +39,21 @@ function main() {
     });
 
     //event listeners for colors
-    redSlider.addEventListener("input", function(){
-        red = redSlider.valueAsNumber;
-        changeColor(red, green, blue);
+    document.getElementById("autoColor").addEventListener("click", function(){
+        if (colorMode == 1) {
+            colorMode = 0;
+        } else {
+            colorMode = 1;
+        }
     });
-    greenSlider.addEventListener("input", function(){
-        green = greenSlider.valueAsNumber;
-        changeColor(red, green, blue);
+    document.getElementById("redSlider").addEventListener("input", function(){
+        red = document.getElementById("redSlider").valueAsNumber;
     });
-    blueSlider.addEventListener("input", function(){
-        blue = blueSlider.valueAsNumber;
-        changeColor(red, green, blue);
+    document.getElementById("greenSlider").addEventListener("input", function(){
+        green = document.getElementById("greenSlider").valueAsNumber;
+    });
+    document.getElementById("blueSlider").addEventListener("input", function(){
+        blue = document.getElementById("blueSlider").valueAsNumber;
     });
 
     //file uploaded
@@ -81,7 +89,7 @@ function main() {
             xTracker[i] = 0;
         }
         //draw algorithms
-        function drawData(dataArray, bufferLength, canvas, ctx, red, green, blue, xTracker){
+        function drawData(dataArray){
             if (visMode == 0) {
                 drawBars(dataArray, bufferLength, canvas, ctx, red, green, blue);
             } else if (visMode == 1) {
@@ -94,12 +102,35 @@ function main() {
                 radiusTracker = drawPulse(dataArray, bufferLength, canvas, ctx, red, green, blue, radiusTracker);
             }
         }
+        //change colors using freq data
+        function colorResponse(dataArray){
+            let bass = getAverage(dataArray.slice(0, 3));;
+            let colorList;
+            let cooldown = 25;
+            if (colorDisplay > 2) {
+                colorDisplay = 0;
+            }
+            if (bass == 255 && colorCount >= cooldown) {
+                colorCount = 0; //reset counter
+                colorDisplay += 1; //display setting, 0 - red, 1 - green, 2 - blue
+            }
+            colorCount += 1
+
+            colorList = setColor(dataArray, colorDisplay);
+            red = colorList[0];
+            blue = colorList[1];
+            green = colorList[2];
+        }
+
         //animation loop
         function animate(){
             analyzer.getByteFrequencyData(dataArray); // sets each element in our array to a freq
+            if (colorMode == 1) {
+                colorResponse(dataArray, bufferLength)
+            }
+            changeColor(red, green, blue);
             ctx.clearRect(0, 0, canvas.width, canvas.height); //clears the entire canvas
-            drawData(dataArray, bufferLength, canvas, ctx, red, green, blue, xTracker);
-
+            drawData(dataArray);
             timeSlider.valueAsNumber = audio.currentTime;
             document.getElementById("timeDisplay").innerHTML = getMinutes(timeSlider.valueAsNumber) + "/" + getMinutes(timeSlider.max);
             updatePauseButton(document.getElementById("pauseButton"));
@@ -111,7 +142,7 @@ function main() {
 }
 
 //changes front end color
-function changeColor(red, green, blue){
+function changeColor(red, green, blue){ //make function for button change repetitive code
     let color = "rgb(" + red + ", " + green + ", " + blue + ")";
     document.getElementById("barButton").style = "border-color: " + color + ";"
     document.getElementById("circleButton").style = "border-color: " + color + ";";
@@ -121,6 +152,7 @@ function changeColor(red, green, blue){
     document.getElementById("pauseButton").style = "border-color: " + color + ";";
     document.getElementById("timeSlider").style = "accent-color: " + color + "; filter: drop-shadow(0px 0px 4px " + color + ");";
     document.getElementById("fileLabel").style = "text-decoration: underline " + color + "; text-shadow: 3px 2px 4px " + color + ";";
+    document.getElementById("autoColor").style = "border-color: " + color + ";";
 }
 
 //set canvas width and height
@@ -173,6 +205,18 @@ function getMinutes(seconds){
         remainder = "0" + remainder;
     }
     return mins + ":" + remainder;
+}
+
+//takes in freq array and colorDisplay to check what color to return
+function setColor(dataArray, mode){
+    let vol = 2 * getAverage(dataArray);
+    if (mode == 0) {
+        return [vol, 0, 0];
+    } else if (mode == 1) {
+        return [0, vol, 0];
+    } else {
+        return [0, 0, vol];
+    }
 }
 
 //function calls

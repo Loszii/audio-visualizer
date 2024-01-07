@@ -84,7 +84,7 @@ function drawSquare(dataArray, xPos, yPos, scale, y, avg, canvas, ctx, bufferLen
     ctx.restore();
 }
 
-function drawPulse(dataArray, bufferLength, canvas, ctx, red, green, blue, radiusTracker){ //draw one more 
+function drawPulse(dataArray, bufferLength, canvas, ctx, red, green, blue, radiusTracker){
     const scale = 0.01;
     let avg = getAverage(dataArray);
     ctx.strokeStyle = "rgb(" + red + "," + green + "," + blue + ")";
@@ -128,4 +128,4 @@ function getAverage(array){
     return sum / length;
 }
 
-export { drawBars, drawCircle, drawLines, drawSquares, drawPulse };
+export { drawBars, drawCircle, drawLines, drawSquares, drawPulse, getAverage };
