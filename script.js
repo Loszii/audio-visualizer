@@ -1,7 +1,10 @@
 import { drawBars, drawCircle, drawLines, drawSquares, drawPulse, getAverage } from "/visualizers.js";
 
-//to do: fix color updater button and sliders
+//to do:
 //maybe remove bufferlength and just use dataArray.length
+//fix slider background color
+//could check when avg freq jumps, add to counter if curFreq > prevFreq and reset when decreases by more than 5 to find spikes in vol
+//change color on these spikes
 
 //main function with animation loop inside
 function main() {
@@ -16,7 +19,7 @@ function main() {
     //initial values
     let colorDisplay = 0; //swap thru r g and b
     let colorCount = 0; //cooldown for color swap
-    let colorMode = 1; //1 if auto on 0 if off
+    let colorMode = 0; //1 if auto on 0 if off
     let visMode = 0;
     let red = 255, green = 255, blue = 255;
     changeColor(red, green, blue);
