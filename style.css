@@ -79,6 +79,11 @@
     height: 30px;
     width: 30px;
 }
+#autoColor {
+    height: 40px;
+    width: 40px;
+    margin: auto 0 auto 0;
+}
 #fileUpload {
     display: none;
 }

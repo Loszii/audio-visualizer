@@ -14,9 +14,9 @@ function main() {
     let bufferLength;
     let dataArray;
     //initial values
-    let colorDisplay = 0;
-    let colorCount = 0;
-    let colorMode = 1;
+    let colorDisplay = 0; //swap thru r g and b
+    let colorCount = 0; //cooldown for color swap
+    let colorMode = 1; //1 if auto on 0 if off
     let visMode = 0;
     let red = 255, green = 255, blue = 255;
     changeColor(red, green, blue);
@@ -42,8 +42,10 @@ function main() {
     document.getElementById("autoColor").addEventListener("click", function(){
         if (colorMode == 1) {
             colorMode = 0;
+            document.getElementById("autoColor").innerHTML = "Auto (OFF)";
         } else {
             colorMode = 1;
+            document.getElementById("autoColor").innerHTML = "Auto (ON)";
         }
     });
     document.getElementById("redSlider").addEventListener("input", function(){
@@ -104,13 +106,13 @@ function main() {
         }
         //change colors using freq data
         function colorResponse(dataArray){
-            let bass = getAverage(dataArray.slice(0, 3));;
+            let bass = getAverage(dataArray.slice(0, Math.round(0.0125 * bufferLength))); // to get 0 - 250hz for bass
             let colorList;
-            let cooldown = 25;
+            let cooldown = 50;
             if (colorDisplay > 2) {
                 colorDisplay = 0;
             }
-            if (bass == 255 && colorCount >= cooldown) {
+            if (bass >= 245 && colorCount >= cooldown) {
                 colorCount = 0; //reset counter
                 colorDisplay += 1; //display setting, 0 - red, 1 - green, 2 - blue
             }
@@ -134,6 +136,7 @@ function main() {
             timeSlider.valueAsNumber = audio.currentTime;
             document.getElementById("timeDisplay").innerHTML = getMinutes(timeSlider.valueAsNumber) + "/" + getMinutes(timeSlider.max);
             updatePauseButton(document.getElementById("pauseButton"));
+            updateSliders(red, green, blue);
             requestAnimationFrame(animate);
         }
         animate();
@@ -185,6 +188,12 @@ function updatePauseButton(pauseButton){
     } else {
         pauseButton.innerHTML = "| |";
     }
+}
+
+function updateSliders(red, green, blue){
+    document.getElementById("redSlider").value = red;
+    document.getElementById("greenSlider").value = green;
+    document.getElementById("blueSlider").value = blue;
 }
 
 //edits file name to be 30 letters so fits
