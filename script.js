@@ -2,9 +2,7 @@ import { drawBars, drawCircle, drawLines, drawSquares, drawPulse, getAverage } f
 
 //to do:
 //maybe remove bufferlength and just use dataArray.length
-//fix slider background color
-//could check when avg freq jumps, add to counter if curFreq > prevFreq and reset when decreases by more than 5 to find spikes in vol
-//change color on these spikes
+//fix slider background color, maybe make less color interactive
 
 //main function with animation loop inside
 function main() {
@@ -18,7 +16,6 @@ function main() {
     let dataArray;
     //initial values
     let colorDisplay = 0; //swap thru r g and b
-    let colorCount = 0; //cooldown for color swap
     let colorMode = 0; //1 if auto on 0 if off
     let visMode = 0;
     let red = 255, green = 255, blue = 255;
@@ -88,6 +85,10 @@ function main() {
         const timeSlider = document.getElementById("timeSlider");
         let xTracker = new Array(bufferLength);
         let radiusTracker = [0, (-1/3) * (canvas.width / 2 + 1024), (-2/3) * (canvas.width / 2 + 1024)];
+        let prevVol;
+        let currentVol = 0;
+        let cooldown = 0;
+        let volCounter = 0;
 
         timeSlider.max = audio.duration;
         for (let i = 0; i < bufferLength; i++) {
@@ -109,17 +110,21 @@ function main() {
         }
         //change colors using freq data
         function colorResponse(dataArray){
-            let bass = getAverage(dataArray.slice(0, Math.round(0.0125 * bufferLength))); // to get 0 - 250hz for bass
             let colorList;
-            let cooldown = 50;
+            if ((currentVol - prevVol) >= 0 && cooldown >= 25) {
+                volCounter += currentVol - prevVol;
+            } else {
+                volCounter = 0;
+            }
+            if (volCounter >= 20) {
+                colorDisplay += 1 //change color
+                cooldown = 0; //reset cooldown so no flickering
+                volCounter = 0; //reset accumulative change in vol
+            }
             if (colorDisplay > 2) {
                 colorDisplay = 0;
             }
-            if (bass >= 245 && colorCount >= cooldown) {
-                colorCount = 0; //reset counter
-                colorDisplay += 1; //display setting, 0 - red, 1 - green, 2 - blue
-            }
-            colorCount += 1
+            cooldown += 1;
 
             colorList = setColor(dataArray, colorDisplay);
             red = colorList[0];
@@ -130,6 +135,8 @@ function main() {
         //animation loop
         function animate(){
             analyzer.getByteFrequencyData(dataArray); // sets each element in our array to a freq
+            prevVol = currentVol;
+            currentVol = getAverage(dataArray);
             if (colorMode == 1) {
                 colorResponse(dataArray, bufferLength)
             }
