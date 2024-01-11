@@ -44,7 +44,7 @@ function drawCircle(dataArray, bufferLength, canvas, ctx, red, green, blue){
 function drawLines(dataArray, bufferLength, canvas, ctx, red, green, blue, xTracker){
     const scale = 0.025; //scale of speed
     const barHeight = canvas.height / bufferLength;
-    let y = 115;
+    let y = 100;
     let avg = getAverage(dataArray);
     ctx.fillStyle = "rgb(" + red + "," + green + "," + blue + ")";
     for (let i = 0; i < bufferLength; i++) { //to put back on screen

@@ -2,7 +2,8 @@ import { drawBars, drawCircle, drawLines, drawSquares, drawPulse, getAverage } f
 
 //to do:
 //maybe remove bufferlength and just use dataArray.length
-//fix slider background color, maybe make less color interactive
+//volume slider
+//make title fit better maybe adjust font size 
 
 //main function with animation loop inside
 function main() {
@@ -15,12 +16,16 @@ function main() {
     let bufferLength;
     let dataArray;
     //initial values
+    let animationStatus = 0;
     let colorDisplay = 0; //swap thru r g and b
-    let colorMode = 0; //1 if auto on 0 if off
-    let visMode = 0;
+    let colorMode = 0; //autoColor button var
+    let visMode = 0; //visualizer button var
     let red = 255, green = 255, blue = 255;
-    changeColor(red, green, blue);
 
+    changeColor(red, green, blue);
+    initCanvas();
+    connectTime();
+    
     //event listeners for vis buttons
     document.getElementById("barButton").addEventListener("click", function(){
         visMode = 0;
@@ -42,10 +47,8 @@ function main() {
     document.getElementById("autoColor").addEventListener("click", function(){
         if (colorMode == 1) {
             colorMode = 0;
-            document.getElementById("autoColor").innerHTML = "Auto (OFF)";
         } else {
             colorMode = 1;
-            document.getElementById("autoColor").innerHTML = "Auto (ON)";
         }
     });
     document.getElementById("redSlider").addEventListener("input", function(){
@@ -128,8 +131,8 @@ function main() {
 
             colorList = setColor(dataArray, colorDisplay);
             red = colorList[0];
-            blue = colorList[1];
-            green = colorList[2];
+            green = colorList[1];
+            blue = colorList[2];
         }
 
         //animation loop
@@ -140,7 +143,7 @@ function main() {
             if (colorMode == 1) {
                 colorResponse(dataArray, bufferLength)
             }
-            changeColor(red, green, blue);
+            changeColor(red, green, blue, colorMode, visMode);
             ctx.clearRect(0, 0, canvas.width, canvas.height); //clears the entire canvas
             drawData(dataArray);
             timeSlider.valueAsNumber = audio.currentTime;
@@ -149,23 +152,44 @@ function main() {
             updateSliders(red, green, blue);
             requestAnimationFrame(animate);
         }
-        animate();
+
+        if (animationStatus == 0) {
+            animate();
+            animationStatus += 1;
+        }
     }
     });
 }
 
 //changes front end color
-function changeColor(red, green, blue){ //make function for button change repetitive code
+function changeColor(red, green, blue, colorMode, visMode){ //make function for button change repetitive code
     let color = "rgb(" + red + ", " + green + ", " + blue + ")";
-    document.getElementById("barButton").style = "border-color: " + color + ";"
-    document.getElementById("circleButton").style = "border-color: " + color + ";";
-    document.getElementById("lineButton").style = "border-color: " + color + ";";
-    document.getElementById("squareButton").style = "border-color: " + color + ";";
-    document.getElementById("pulseButton").style = "border-color: " + color + ";";
+
+    document.getElementById("barButton").style = "border-color: black;";
+    document.getElementById("circleButton").style = "border-color: black;";
+    document.getElementById("lineButton").style = "border-color: black;";
+    document.getElementById("squareButton").style = "border-color: black;";
+    document.getElementById("pulseButton").style = "border-color: black;";
+    document.getElementById("autoColor").style = "border-color: black;";
+
+    if (colorMode == 1) {
+        document.getElementById("autoColor").style = "border-color: " + color + ";";
+    }
+    if (visMode == 0) {
+        document.getElementById("barButton").style = "border-color: " + color + ";"
+    } else if (visMode == 1) {
+        document.getElementById("circleButton").style = "border-color: " + color + ";";
+    } else if (visMode == 2) {
+        document.getElementById("lineButton").style = "border-color: " + color + ";";
+    } else if (visMode == 3) {
+        document.getElementById("squareButton").style = "border-color: " + color + ";";
+    } else if (visMode == 4) {
+        document.getElementById("pulseButton").style = "border-color: " + color + ";";
+    }
+
     document.getElementById("pauseButton").style = "border-color: " + color + ";";
-    document.getElementById("timeSlider").style = "accent-color: " + color + "; filter: drop-shadow(0px 0px 4px " + color + ");";
+    document.getElementById("timeSlider").style = "filter: drop-shadow(0px 0px 4px " + color + ");";
     document.getElementById("fileLabel").style = "text-decoration: underline " + color + "; text-shadow: 3px 2px 4px " + color + ";";
-    document.getElementById("autoColor").style = "border-color: " + color + ";";
 }
 
 //set canvas width and height
@@ -227,18 +251,15 @@ function getMinutes(seconds){
 }
 
 //takes in freq array and colorDisplay to check what color to return
-function setColor(dataArray, mode){
+function setColor(dataArray, colorDisplay){
     let vol = 2 * getAverage(dataArray);
-    if (mode == 0) {
+    if (colorDisplay == 0) {
         return [vol, 0, 0];
-    } else if (mode == 1) {
+    } else if (colorDisplay == 1) {
         return [0, vol, 0];
     } else {
         return [0, 0, vol];
     }
 }
 
-//function calls
-initCanvas();
-connectTime();
 main();

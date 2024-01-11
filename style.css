@@ -67,6 +67,7 @@
 }
 #timeSlider {
     width: 50%;
+    accent-color: white;
 }
 #timeDisplay {
     font-size: 20px;
