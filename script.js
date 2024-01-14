@@ -1,9 +1,8 @@
 import { drawBars, drawCircle, drawLines, drawSquares, drawPulse, getAverage } from "/visualizers.js";
 
 //to do:
-//maybe remove bufferlength and just use dataArray.length
+
 //volume slider
-//make title fit better maybe adjust font size 
 
 //main function with animation loop inside
 function main() {
@@ -194,9 +193,26 @@ function changeColor(red, green, blue, colorMode, visMode){ //make function for 
 
 //set canvas width and height
 function initCanvas(){
+    updateWindowSize();
+
+    window.addEventListener("resize", function(){
+        updateWindowSize();
+    })
+}
+
+//makes sure window is right size for program to work
+function updateWindowSize(){
     const canvas = document.getElementById("canvas1");
+    const errorScreen = document.getElementById("errorScreen");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    if (window.innerWidth < 1500) {
+        errorScreen.style = "z-index: 100;";
+        window.document.getElementById("content").style.display = "none";
+    } else {
+        errorScreen.style = "z-index: -100;";
+        window.document.getElementById("content").style.display = "flex";
+    }
 }
 
 //event listeners for timeSlider and pauseButton
@@ -232,8 +248,8 @@ function updateSliders(red, green, blue){
 
 //edits file name to be 30 letters so fits
 function getSongName(name){
-    if (name.length > 30) {
-        name = name.slice(0, 30) + "...";
+    if (name.length > 35) {
+        name = name.slice(0, 35) + "...";
     }
     return name;
 }
