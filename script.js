@@ -15,9 +15,9 @@ function main() {
     let bufferLength;
     let dataArray;
     //initial values
-    let animationStatus = 0;
+    let animationPaused = true;
     let colorDisplay = 0; //swap thru r g and b
-    let colorMode = 0; //autoColor button var
+    let autoColorOn = false;
     let visMode = 0; //visualizer button var
     let red = 255, green = 255, blue = 255;
 
@@ -44,10 +44,10 @@ function main() {
 
     //event listeners for colors
     document.getElementById("autoColor").addEventListener("click", function(){
-        if (colorMode == 1) {
-            colorMode = 0;
+        if (autoColorOn) {
+            autoColorOn = false;
         } else {
-            colorMode = 1;
+            autoColorOn = true;
         }
     });
     document.getElementById("redSlider").addEventListener("input", function(){
@@ -139,10 +139,10 @@ function main() {
             analyzer.getByteFrequencyData(dataArray); // sets each element in our array to a freq
             prevVol = currentVol;
             currentVol = getAverage(dataArray);
-            if (colorMode == 1) {
+            if (autoColorOn) {
                 colorResponse(dataArray, bufferLength)
             }
-            changeColor(red, green, blue, colorMode, visMode);
+            changeColor(red, green, blue, autoColorOn, visMode);
             ctx.clearRect(0, 0, canvas.width, canvas.height); //clears the entire canvas
             drawData(dataArray);
             timeSlider.valueAsNumber = audio.currentTime;
@@ -152,16 +152,16 @@ function main() {
             requestAnimationFrame(animate);
         }
 
-        if (animationStatus == 0) {
+        if (animationPaused) {
             animate();
-            animationStatus += 1;
+            animationPaused = false;
         }
     }
     });
 }
 
 //changes front end color
-function changeColor(red, green, blue, colorMode, visMode){ //make function for button change repetitive code
+function changeColor(red, green, blue, autoColorOn, visMode){ //make function for button change repetitive code
     let color = "rgb(" + red + ", " + green + ", " + blue + ")";
 
     document.getElementById("barButton").style = "border-color: black;";
@@ -171,7 +171,7 @@ function changeColor(red, green, blue, colorMode, visMode){ //make function for 
     document.getElementById("pulseButton").style = "border-color: black;";
     document.getElementById("autoColor").style = "border-color: black;";
 
-    if (colorMode == 1) {
+    if (autoColorOn) {
         document.getElementById("autoColor").style = "border-color: " + color + ";";
     }
     if (visMode == 0) {
