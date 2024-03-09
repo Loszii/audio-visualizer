@@ -3,6 +3,8 @@ import { drawBars, drawCircle, drawLines, drawSquares, drawPulse, getAverage } f
 //to do:
 
 //volume slider
+//mobile functionality
+//defaulted songs that you can test without uploading one
 
 //main function with animation loop inside
 function main() {
@@ -203,16 +205,8 @@ function initCanvas(){
 //makes sure window is right size for program to work
 function updateWindowSize(){
     const canvas = document.getElementById("canvas1");
-    const errorScreen = document.getElementById("errorScreen");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    if (window.innerWidth < 1500) {
-        errorScreen.style = "z-index: 100;";
-        window.document.getElementById("content").style.display = "none";
-    } else {
-        errorScreen.style = "z-index: -100;";
-        window.document.getElementById("content").style.display = "flex";
-    }
 }
 
 //event listeners for timeSlider and pauseButton
