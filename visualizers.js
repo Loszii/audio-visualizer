@@ -1,3 +1,4 @@
+//default audio visualizer, bars for each freq
 function drawBars(dataArray, bufferLength, canvas, ctx, red, green, blue){
     const barWidth = ((canvas.width/2) / bufferLength); //divided by 2 for mirrored image
     let x = 0;
@@ -24,6 +25,7 @@ function drawBars(dataArray, bufferLength, canvas, ctx, red, green, blue){
     }
 }
 
+//circular equalizer
 function drawCircle(dataArray, bufferLength, canvas, ctx, red, green, blue){
     const rotations = 10; //not exactly ten since bufferLength equation is irrational number
     const barWidth = 5;
@@ -41,6 +43,7 @@ function drawCircle(dataArray, bufferLength, canvas, ctx, red, green, blue){
     ctx.restore(); //loads origin back so can clear
 }
 
+//draws many moving lines
 function drawLines(dataArray, bufferLength, canvas, ctx, red, green, blue, xTracker){
     const scale = 0.025; //scale of speed
     const barHeight = canvas.height / bufferLength;
@@ -61,6 +64,7 @@ function drawLines(dataArray, bufferLength, canvas, ctx, red, green, blue, xTrac
     return xTracker;
 }
 
+//draws multiple squares
 function drawSquares(dataArray, bufferLength, canvas, ctx, red, green, blue){
     const scale = 0.015;
     const y = 30;
@@ -84,6 +88,7 @@ function drawSquare(dataArray, xPos, yPos, scale, y, avg, canvas, ctx, bufferLen
     ctx.restore();
 }
 
+//draws pulses on screen
 function drawPulse(dataArray, bufferLength, canvas, ctx, red, green, blue, radiusTracker){
     const scale = 0.01;
     let avg = getAverage(dataArray);
@@ -119,6 +124,7 @@ function drawPulse(dataArray, bufferLength, canvas, ctx, red, green, blue, radiu
     return radiusTracker
 }
 
+//returns average of array
 function getAverage(array){
     let sum = 0;
     let length = array.length;

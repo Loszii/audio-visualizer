@@ -16,9 +16,13 @@
             </div>
             <div id="audioControls">
                 <audio id="audio1" loop="true"></audio>
-                <button id="pauseButton">| |</button>
+                <button id="pauseButton">&#9658;</button>
                 <input id="timeSlider" type="range" value="0" min="0">
                 <h1 id="timeDisplay">0 / 0</h1>
+                <div>
+                    <img id="volumeIcon" src="res/audio.png">
+                    <input id="volumeSlider" type="range" min="0" max="10" value="10">
+                </div>
             </div>
             <div id="buttons">
                 <button id="barButton">Bars</button>
@@ -28,7 +32,7 @@
                 <button id="pulseButton">Pulses</button>
             </div>
             <div id="sliders">
-                <button id="autoColor">Auto</button>
+                <button id="autoColor">Auto Coloring</button>
                 <input id="redSlider" type="range" min="0" max="255" value="255">
                 <input id="greenSlider" type="range" min="0" max="255" value="255">
                 <input id="blueSlider" type="range" min="0" max="255" value="255">

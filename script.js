@@ -1,9 +1,5 @@
 import { drawBars, drawCircle, drawLines, drawSquares, drawPulse, getAverage } from "/visualizers.js";
 
-//to do:
-
-//volume slider
-
 //main function with animation loop inside
 function main() {
     const audio = document.getElementById("audio1");
@@ -14,6 +10,7 @@ function main() {
     let analyzer;
     let bufferLength;
     let dataArray;
+    
     //initial values
     let animationPaused = true;
     let colorDisplay = 0; //swap thru r g and b
@@ -21,9 +18,9 @@ function main() {
     let visMode = 0; //visualizer button var
     let red = 255, green = 255, blue = 255;
 
-    changeColor(red, green, blue);
-    initCanvas();
-    connectTime();
+    changeColor(red, green, blue); //updates front end to white
+    initCanvas(); //sets canvas size
+    connectControls(); //connects the custom audio controls
     
     //event listeners for vis buttons
     document.getElementById("barButton").addEventListener("click", function(){
@@ -85,13 +82,16 @@ function main() {
     
     audio.onloadedmetadata = function(){
         const timeSlider = document.getElementById("timeSlider");
+        //values for lines and pulses visualizers
         let xTracker = new Array(bufferLength);
         let radiusTracker = [0, (-1/3) * (canvas.width / 2 + 1024), (-2/3) * (canvas.width / 2 + 1024)];
+
         let prevVol;
         let currentVol = 0;
         let cooldown = 0;
         let volCounter = 0;
 
+        //set timeslider maximum time value depending on file
         timeSlider.max = audio.duration;
         for (let i = 0; i < bufferLength; i++) {
             xTracker[i] = 0;
@@ -188,6 +188,7 @@ function changeColor(red, green, blue, autoColorOn, visMode){ //make function fo
 
     document.getElementById("pauseButton").style = "border-color: " + color + ";";
     document.getElementById("timeSlider").style = "filter: drop-shadow(0px 0px 4px " + color + ");";
+    document.getElementById("volumeSlider").style = "filter: drop-shadow(0px 0px 4px " + color + ");";
     document.getElementById("fileLabel").style = "text-decoration: underline " + color + "; text-shadow: 3px 2px 4px " + color + ";";
 }
 
@@ -216,10 +217,13 @@ function updateWindowSize(){
 }
 
 //event listeners for timeSlider and pauseButton
-function connectTime() {
+function connectControls() {
     const audio = document.getElementById("audio1")
     document.getElementById("timeSlider").addEventListener("input", function(){
         audio.currentTime = document.getElementById("timeSlider").valueAsNumber;
+    });
+    document.getElementById("volumeSlider").addEventListener("input", function() {
+        audio.volume = document.getElementById("volumeSlider").valueAsNumber / 10;
     });
     document.getElementById("pauseButton").addEventListener("click", function() {
         if (audio.paused) {
@@ -240,6 +244,7 @@ function updatePauseButton(pauseButton){
     }
 }
 
+//updates sliders for when color is automatically changing
 function updateSliders(red, green, blue){
     document.getElementById("redSlider").value = red;
     document.getElementById("greenSlider").value = green;
@@ -248,8 +253,8 @@ function updateSliders(red, green, blue){
 
 //edits file name to be 30 letters so fits
 function getSongName(name){
-    if (name.length > 35) {
-        name = name.slice(0, 35) + "...";
+    if (name.length > 50) {
+        name = name.slice(0, 50) + "...";
     }
     return name;
 }
