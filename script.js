@@ -1,4 +1,4 @@
-import { drawBars, drawCircle, drawLines, drawSquares, drawPulse, getAverage } from "/visualizers.js";
+import { drawBars, drawCircle, drawLines, drawSquares, drawPulse, getAverage } from "./visualizers.js";
 
 //main function with animation loop inside
 function main() {
@@ -161,7 +161,7 @@ function main() {
 }
 
 //changes front end color
-function changeColor(red, green, blue, autoColorOn, visMode){ //make function for button change repetitive code
+function changeColor(red, green, blue, autoColorOn, visMode){
     let color = "rgb(" + red + ", " + green + ", " + blue + ")";
 
     document.getElementById("barButton").style = "border-color: black;";
