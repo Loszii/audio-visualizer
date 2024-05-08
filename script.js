@@ -205,14 +205,15 @@ function initCanvas(){
 function updateWindowSize(){
     const canvas = document.getElementById("canvas1");
     const errorScreen = document.getElementById("errorScreen");
+    const content = window.document.getElementById("content");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    if (window.innerWidth < 1500) {
-        errorScreen.style = "z-index: 100;";
-        window.document.getElementById("content").style.display = "none";
+    if (window.innerWidth < 500) {
+        errorScreen.style.display = "block";
+        content.style.display = "none";
     } else {
-        errorScreen.style = "z-index: -100;";
-        window.document.getElementById("content").style.display = "flex";
+        errorScreen.style.display = "none";
+        content.style.display = "flex";
     }
 }
 

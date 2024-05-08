@@ -1,53 +1,92 @@
+body {
+    background: black;
+}
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Inter Tight", sans-serif;
+    font-size: calc(0.5vw + 0.5rem);
 }
 #container {
     position: absolute;
     top: 0;
     bottom: 0;
-    background: black;
     width: 100%;
     height: 100%;
 }
 #content {
-    position: fixed;
     z-index: 1;
     display: flex;
     margin-top: 10px;
-    width: 100%;
-}
-#canvas1 {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%
-}
-#audioControls {
-    display: flex;
-    justify-content: center;
-    width: 50%;
-}
-#fileLabel {
-    color: white;
-    font-size: 30px;
-    font-weight: bold;
-    padding-left: 15px;
+    justify-content: space-around;
+    align-items: flex-start;
 }
 #songData {
-    width: 35%;
+    width: 25vw;
     display: flex;
     justify-content: center;
 }
+#audioControls {
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 35vw;
+}
+#volumeDisplay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 #buttons {
+    width: 20vw;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+#sliders {
+    flex-direction: column;
     gap: 5px;
-    width: 25%;
     display: flex;
     justify-content: center;
-    margin-right: 20px;
+    width: 10vw;
 }
+
+button {
+    background-color: black;
+    color: white;
+    height: 3em;
+    width: 4em;
+    font-size: 0.95rem;
+}
+
+#timeDisplay {
+    white-space: nowrap;
+    font-size: 1rem;
+    color: white;
+}
+#pauseButton {
+    height: 2rem;
+    width: 2rem;
+    font-size: 0.75rem;
+}
+#timeSlider {
+    width: 50%;
+    height: 50%;
+    accent-color: white;
+}
+#volumeIcon {
+    height: 2vw;
+    width: 2vw;
+}
+#volumeSlider {
+    accent-color: white;
+    height: 40px;
+    width: 60%;
+}
+
 #redSlider {
     accent-color: red;
 }
@@ -57,54 +96,24 @@
 #blueSlider {
     accent-color: blue;
 }
-#sliders {
-    flex-direction: column;
-    gap: 5px;
-    display: flex;
-    justify-content: center;
-    width: 10%;
-    margin-right: 15px;
-}
-#timeSlider {
-    width: 40%;
-    height: 40px;
-    margin-left: 5px;
-    margin-right: 5px;
-    accent-color: white;
-}
-#volumeSlider {
-    accent-color: white;
-    height: 40px;
-    width: 60%;
-}
-#volumeIcon {
-    width: 25px;
-    height: 25px;
-    margin-left: 10%;
-    margin-bottom: 5px;
-}
-#timeDisplay {
-    font-size: 20px;
-    color: white;
-    display: inline;
-    margin-top: 10px;
-}
-#pauseButton {
-    margin-top: 5px;
-    height: 30px;
-    width: 30px;
-}
+
 #autoColor {
     height: 25px;
-    width: 75%;
-    margin-bottom: 5px;
+    width: 100%;
     margin: auto;
+}
+
+#fileLabel {
+    font-size: 1.5rem;
+    color: white;
+    font-weight: bold;
 }
 #fileUpload {
     display: none;
 }
+
 #errorScreen {
-    z-index: -100;
+    display: none;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -114,15 +123,18 @@
 }
 #errorMessage {
     color: white;
-    font-size: 25px;
+    font-size: 4rem;
     text-decoration: underline;
     text-align: center;
     position: relative;
-    top: 45%;
+    top: 25%;
 }
-button {
-    background-color: black;
-    color: white;
-    height: 50px;
-    width: 60px;
+
+#canvas1 {
+    z-index: -50;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%
 }
